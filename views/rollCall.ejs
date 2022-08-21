@@ -1,0 +1,38 @@
+<%- include('./includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/check.css">
+</head>
+
+<body>
+    <%- include('./includes/navigation.ejs') %>
+
+    <main>
+        <% if (status === "off") { %>
+            <h1>please,check-in</h1>
+            <form action="rollCall/checkin" method="POST">
+                <div class="mb-3">
+                    <label for="name" class="form-label">Staff : </label>
+                    <input type="text" class="form-control" id="name" value="<%= userName %>" readonly>
+                </div> 
+                <div class="mb-3">
+                    <label for="workPos" class="form-label">Work at : </label>
+                    <select name = "workPostion" id = "workPos" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">s
+                        <option selected value="company">Company</option>
+                        <option value="home">Home</option>
+                        <option value="client">Client</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Checkin</button>
+                <button type="button" class="btn btn-primary"><a style="color:white;text-decoration: none;" href="/rollCall/infor">check rollcall</a></button>
+            </form>
+        <% } else { %>
+            <h1>Status : Working</h1>
+            <div>
+                <p>Work at : <%= workAt %></p>
+                <p>checkin time : <%= startTime %> </p>
+            </div>
+            <form action="/rollcall/check-out" method="POST">
+                <button class="btn btn-primary" type="submit">Check out</button>
+            </form>
+        <% } %>
+    </main>
+<%- include('./includes/end.ejs') %>

@@ -1,0 +1,24 @@
+<%- include('./includes/head.ejs') %>
+    <link rel="stylesheet" href="/css/check.css">
+</head>
+
+<body>
+    <%- include('./includes/navigation.ejs') %>
+
+    <main>
+        <h1>Status : You are off Now</h1>
+
+        <div>
+            <h2>You are work <%= totalWorkTime %> hour</h2>
+            <% rollCalls.forEach(rollcall => { %>
+            <div>
+                <p>checkin time : <%= rollcall.checkIn %></p>
+                <p>checkout time : <%= rollcall.checkOut %></p>
+                <p>work at : <%=rollcall.position %></p>
+                <hr>
+            </div>
+            <% }) %>
+        </div>
+        
+    </main>
+<%- include('./includes/end.ejs') %>

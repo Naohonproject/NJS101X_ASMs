@@ -1,0 +1,33 @@
+.button-group {
+  display: flex;
+  flex: row wrap;
+  justify-content: space-around;
+  width: 30%;
+  background-color: #ccc;
+  height: 4rem;
+  margin: 24px auto;
+  padding: 8px;
+  border-radius: 8px;
+}
+.button-group button {
+  height: 60px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  padding: 8px 16px;
+}
+.button-group button:hover {
+  cursor: pointer;
+  opacity: 0.5;
+}
+.button-group .checkin {
+  background-color: #2f9cbd;
+}
+.button-group .checkout {
+  background-color: #d58837;
+}
+.button-group .annual {
+  background-color: #37d588;
+}
+.status {
+  text-align: center;
+}

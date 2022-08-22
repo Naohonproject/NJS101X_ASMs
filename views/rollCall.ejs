@@ -13,15 +13,37 @@
     <main>
 
         <div class="button-group">
-            <button id="checkinBtn" class="checkin">Check in</button>
-            <button id="checkoutBtn" class="checkout">check out</button>
+            <button <% if(status === "on") { %> disabled <% } %> id="checkinBtn" class="checkin">Check in</button>
+            <form action="/rollcall/checkout" method="post">
+                 <button type="submit" <% if(status === "off") { %> disabled <% } %> id="checkoutBtn" class="checkout">check out</button>
+            </form>
+           
             <button id="annualLeaveBtn" class="annual">Annual Leave</button>
         </div>
 
         <div class="status">
+            <%if (status === "off") { %> 
             <h3>
                 You are off Now, Check in to start work
             </h3>
+            <% } %>
+             <% if (checkIn && checkOut==="Invalid Date") { %>
+                <h3>
+                    Status : Working
+                </h3>
+                <hr>
+                <div class="checkin">
+                    <p>Your latest check In : </p>
+                    <ul>
+                        <li>
+                            work at : <%= workPos %>
+                        </li>
+                        <li>
+                            start at : <%= checkIn %> 
+                        </li>
+                    </ul>
+                </div>
+            <% } %>
         </div>
         <div id="checkinModal" class="modal">
             <div class="modal-content">
@@ -30,14 +52,14 @@
                     <h2>check In</h2>   
                 </div>
                 <div class="modal-body">
-                    <form action="">
+                    <form action="/rollcall/checkin" method="post">
                         <div class="mb-3">
                             <label for="name" class="form-label">Staff Name</label>
-                            <input type="text" class="form-control" id="name" name="userName" value="Le Tuan Bao" readonly>
+                            <input type="text" class="form-control" id="name" name="staffName" value = "<%= staffName %>" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="" class="form-label">Work At</label>
-                            <select class="form-select" aria-label="Default select example">
+                            <select name="workPosition" class="form-select" aria-label="Default select example">
                                 <option selected value="company">Company</option>
                                 <option value="home">Home</option>
                                 <option value="cleint">Cleint</option>
@@ -81,35 +103,5 @@
                 </div>
             </div>
         </div>
-            
-
-        <!-- <% if (status === "off") { %>
-            <h1>please,check-in</h1>
-            <form action="rollCall/checkin" method="POST">
-                <div class="mb-3">
-                    <label for="name" class="form-label">Staff : </label>
-                    <input type="text" class="form-control" id="name" value="<%= userName %>" readonly>
-                </div> 
-                <div class="mb-3">
-                    <label for="workPos" class="form-label">Work at : </label>
-                    <select name = "workPostion" id = "workPos" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">s
-                        <option selected value="company">Company</option>
-                        <option value="home">Home</option>
-                        <option value="client">Client</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">Checkin</button>
-                <button type="button" class="btn btn-primary"><a style="color:white;text-decoration: none;" href="/rollCall/infor">check rollcall</a></button>
-            </form>
-        <% } else { %>
-            <h1>Status : Working</h1>
-            <div>
-                <p>Work at : <%= workAt %></p>
-                <p>checkin time : <%= startTime %> </p>
-            </div>
-            <form action="/rollcall/check-out" method="POST">
-                <button class="btn btn-primary" type="submit">Check out</button>
-            </form>
-        <% } %> -->
     </main>
 <%- include('./includes/end.ejs') %>

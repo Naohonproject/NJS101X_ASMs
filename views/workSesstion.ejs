@@ -1,11 +1,23 @@
 <%- include('./includes/head.ejs') %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/check.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/modal.css">
 </head>
 
 <body>
     <%- include('./includes/navigation.ejs') %>
 
     <main>
+
+        <div class="button-group">
+            <button <% if(status === "on") { %> disabled <% } %> id="checkinBtn" class="checkin">Check in</button>
+            <form action="/rollcall/checkout" method="post">
+                 <button type="submit" <% if(status === "off") { %> disabled <% } %> id="checkoutBtn" class="checkout">check out</button>
+            </form>
+           
+            <button id="annualLeaveBtn" class="annual">Annual Leave</button>
+        </div>
         <h1>Status : You are off Now</h1>
 
         <div>
@@ -18,6 +30,65 @@
                 <hr>
             </div>
             <% }) %>
+        </div>
+
+        <div id="checkinModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>check In</h2>   
+                </div>
+                <div class="modal-body">
+                    <form action="/rollcall/checkin" method="post">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Staff Name</label>
+                            <input type="text" class="form-control" id="name" name="staffName" value = "<%= staffName %>" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Work At</label>
+                            <select name="workPosition" class="form-select" aria-label="Default select example">
+                                <option selected value="company">Company</option>
+                                <option value="home">Home</option>
+                                <option value="cleint">Cleint</option>
+                            </select>
+                            <button type="submit" class="btn btn-outline-warning mt-3 ">Check In</button>
+                        </div>
+                    </form>       
+                </div>
+            </div>
+        </div>
+
+        <div id="AnnualLeaveModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <span class="close">&times;</span>
+                    <h2>Annual Leave</h2>
+                </div>
+                <div class="modal-body">
+                    <form action="">
+                        <div class="mb-3">
+                            <label for="leaveDate" class="form-label">Leave Date</label>
+                            <input type="date" class="form-control" id="leaveDate" name="leaveDate">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="reasonDesc" class="form-label">Reason Description</label>
+                            <textarea name="reasonDesc" class="form-control" id="reasonDesc" rows="3"></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Remaining" class="form-label">Reason Description</label>
+                            <input class="form-control" type="text" id="Remaining" value="12" aria-label="readonly input example" readonly>
+                        </div>
+
+                         <div class="mb-3">
+                            <label for="offTime" class="form-label">Off Time</label>
+                            <input class="form-control" max="8" min="0.5" step="0.1"  type="number" name="offTime" id="offTime">
+                        </div>
+                        <button type="submit" class="btn btn-outline-warning mt-3 ">Register</button>
+                    </form>      
+                </div>
+            </div>
         </div>
         
     </main>

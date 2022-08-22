@@ -45,3 +45,26 @@ td {
   width: 20px;
   border: #ccc solid 1px;
 }
+
+.status ul {
+  text-align: start;
+  padding-left: 1rem;
+  margin-top: 1rem;
+}
+
+.status li {
+  list-style-type: none;
+  text-align: start;
+}
+
+.status p {
+  margin: 0;
+}
+.status .checkin {
+  background-color: #abdbe3;
+  width: 200px;
+  height: 120px;
+  border-radius: 4px;
+  padding: 12px;
+  margin: auto;
+}

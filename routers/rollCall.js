@@ -1,13 +1,13 @@
 const express = require("express");
-const staffController = require("../controllers/staff");
+const staffController = require("../controllers/staffControllers");
 
 const router = express.Router();
 
-router.get("/", staffController.getStaffCheckInForm);
+router.get("/", staffController.getStaffRollCallForm);
 
 router.post("/checkin", staffController.postStaffCheckIn);
 
-router.post("/check-out", staffController.postStaffCheckout);
+router.post("/checkout", staffController.postStaffCheckout);
 
 router.get("/infor", staffController.getStaffRollCallInfor);
 

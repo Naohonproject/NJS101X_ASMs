@@ -8,8 +8,8 @@ const profileRouter = require("./routers/profile");
 const covidRouter = require("./routers/covid");
 // const annualLeaveRouter = require("./routers/leave");
 
-const staffController = require("./controllers/staff");
-const User = require("./model/user");
+const staffController = require("./controllers/staffControllers");
+const Staff = require("./model/staffModel");
 
 const server = express();
 const port = 3000;
@@ -21,9 +21,9 @@ server.use(bodyParser.urlencoded({ extended: false }));
 server.use(express.static(path.join(__dirname, "public")));
 
 server.use((req, res, next) => {
-  User.findById("6300ee71a52b842856c7edae")
-    .then((user) => {
-      req.user = user;
+  Staff.findById("6303ec75723bbc2170c45d47")
+    .then((staff) => {
+      req.staff = staff;
       next();
     })
     .catch((error) => {
@@ -43,18 +43,23 @@ mongoose
     "mongodb+srv://letuanbao:SByQsXUanGc1VnuZ@cluster0.4ewgxhk.mongodb.net/Company?retryWrites=true&w=majority"
   )
   .then(() => {
-    User.findOne().then((user) => {
-      if (!user) {
-        const user = new User({
+    Staff.findOne().then((staff) => {
+      if (!staff) {
+        const user = new Staff({
           name: "le tuan bao",
           email: "Letuanbao27121996@gmail.com",
+          role: "staff",
           doB: new Date("1996-12-27"),
           salaryScale: 4.0,
           startDate: new Date("2019-12-01"),
-          department: "piping",
+          department: "Piping",
           annualLeave: 12,
           imageUrl: "https://unsplash.com/s/photos/personal-assistant",
-          rollCall: [],
+          workSesstions: [],
+          annualLeaveRegisters: [],
+          tempInfor: [],
+          vaccinationInfor: [],
+          postiveCodvid: [],
         });
         user.save();
       }

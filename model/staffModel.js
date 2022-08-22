@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+const staffSchema = new Schema({
   name: {
     type: String,
     required: true,
@@ -39,13 +39,13 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  workSestions: [
+  workSesstions: [
     {
       checkIn: {
         type: Schema.Types.Date,
         required: true,
       },
-      CheckOut: Schema.Types.Date,
+      checkOut: Schema.Types.Date,
       workPos: {
         type: String,
         required: true,
@@ -113,4 +113,4 @@ const userSchema = new Schema({
   ],
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Staff", staffSchema);

@@ -1,0 +1,60 @@
+<%- include('./includes/head.ejs') %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/check.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/modal.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    
+    
+</head>
+
+<body>
+    <%- include('./includes/navigation.ejs') %>
+
+    <main>
+        <div class="status">
+            <h3>
+                Staff Information
+            </h3>
+        <form class="product-form" action="" method="POST">
+            <div class="form-control">
+                <label for="id">Id</label>
+                <input readonly type="text" name="id" id="title" value="2535">
+            </div>  
+            <div class="form-control">
+                <label for="imageUrl">Name</label>
+                <input type="text" name="name" id="imageUrl"  value="Le Tuan Bao">
+            </div>
+             <div class="form-control">
+                <label for="doB">doB</label>
+                <input type="text" name="doB" id="doB"  value="2022-08-22">
+            </div> 
+            <div class="form-control">
+                <label for="salaryScale">Salary Scale </label>
+                <input type="text" name="salaryScale" id="salaryScale"  value="3.2">
+            </div>
+
+            <div class="form-control">
+                <label for="startDate">startDate </label>
+                <input type="text" name="startDate" id="startDate"  value="2022-08-22">
+            </div>
+            
+             <div class="form-control">
+                <label for="dept">Department</label>
+                <input type="text" name="dept" id="dept"  value="IT">
+            </div>
+
+            <div class="form-control">
+                <label for="dept">annual Leave</label>
+                <input type="text" name="annualLeave" id="annualLeave"  value="11">
+            </div>
+             
+             
+             <div class="form-control">
+                <label for="imgUrl">Image URL</label>
+                <input type="text" name="imgUrl" id="imgUrl"  value="//https">
+            </div>
+            <button type="button" class="btn btn-info">Update</button>
+        </div>
+    </main>
+<%- include('./includes/end.ejs') %>

@@ -4,9 +4,9 @@ const path = require("path");
 const mongoose = require("mongoose");
 
 const checkRouter = require("./routers/rollCall");
-const modifyRouter = require("./routers/modify");
-const searchRouter = require("./routers/search");
-const annualLeaveRouter = require("./routers/leave");
+const profileRouter = require("./routers/profile");
+const covidRouter = require("./routers/covid");
+// const annualLeaveRouter = require("./routers/leave");
 
 const staffController = require("./controllers/staff");
 const User = require("./model/user");
@@ -32,9 +32,10 @@ server.use((req, res, next) => {
 });
 
 server.use("/rollcall", checkRouter);
-server.use("/modify", modifyRouter);
-server.use("/search", searchRouter);
-server.use(annualLeaveRouter);
+server.use(profileRouter);
+server.use(covidRouter);
+// server.use("/search", searchRouter);
+// server.use(annualLeaveRouter);
 server.get("/", staffController.getIndex);
 
 mongoose

@@ -1,0 +1,90 @@
+<%- include('./includes/head.ejs') %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/check.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/modal.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    
+    
+</head>
+
+<body>
+    <%- include('./includes/navigation.ejs') %>
+
+    <main> 
+        <div class="row g-1">
+            <div class="col-12 col-md-6 col-lg-4 mb-2">
+                <div class="status">
+                    <h3>
+                        Body temperature
+                    </h3>
+                </div>
+                <form class="product-form" action="" method="POST">
+                    <div class="form-control">
+                        <label for="registerTime">Date</label>
+                        <input type="datetime-local" id="registerTime" name="registerTime">
+                    </div>  
+                    <div class="form-control">
+                        <label for="temp">Temp:</label>
+                        <input type="text" name="temp" id="temp"/>
+                    </div>
+                    <button type="button" class="btn btn-info">Submit</button>
+                </form> 
+             </div>
+
+             <div class="col-12 col-md-6 col-lg-4 mb-2">
+                <div class="status">
+                    <h3>
+                        Vaccination information
+                    </h3>
+                </div>
+                <form class="product-form" action="" method="POST">
+                    <div class="form-control">
+                        <label for="injectionTime">Time:</label>
+                        <select class="custom-select custom-select-lg mb-3" name="injectionTime" id="injectionTime">
+                            <option selected value="1">First</option>
+                            <option value="2">Second</option>
+                            <option value="3">Third</option>
+                        </select>
+                    </div> 
+
+                    <div class="form-control">
+                        <label for="vaccineType">Type:</label>
+                        <select name="vaccineType" id="vaccineType">
+                            <option value="moderna">Moderna</option>
+                            <option value="astraZeneca">AstraZeneca</option>
+                            <option value="sinopharm">Sinopharm </option>
+                        </select>
+                    </div> 
+
+                     <div class="form-control">
+                        <label for="injectionDate">Injection date</label>
+                        <input  type="date" name="injectionDate" id="injectionDate">
+                    </div>
+
+                    <button type="button" class="btn btn-info">Submit</button>
+                </form> 
+             </div>
+
+             <div class="col-12 col-md-6 col-lg-4 mb-2">
+                <div class="status">
+                    <h3>
+                        Covid-19 positive information
+                    </h3>
+                </div>
+                <form class="product-form" action="" method="POST">
+                    <div class="form-control">
+                        <label for="positiveDate">positive Date</label>
+                        <input  type="date" name="positiveDate" id="positiveDate">
+                    </div>
+                    <div class="form-control">
+                        <label for="numberOfVacination">Injections Times</label>
+                        <input  type="text" name="numberOfVacination" id="numberOfVacination">
+                    </div> 
+                    <button type="button" class="btn btn-info">submit</button>
+                </form> 
+             </div>
+        </div>
+             
+    </main>
+<%- include('./includes/end.ejs') %>

@@ -1,13 +1,17 @@
 .form-control {
   margin: 1rem 0;
+  display: flex;
+  justify-content: flex-start;
 }
 
-.form-control label,
-.form-control input,
-.form-control textarea {
-  display: block;
-  width: 100%;
-  margin-bottom: 0.25rem;
+.form-control label {
+  flex-basis: 40%;
+  text-align: start;
+}
+
+.form-control input {
+  border: none;
+  margin-bottom: 0.1rem;
 }
 
 .form-control input,

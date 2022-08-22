@@ -11,6 +11,10 @@ const userSchema = new Schema({
     type: String,
     requierd: true,
   },
+  role: {
+    type: String,
+    requierd: true,
+  },
   doB: {
     type: Schema.Types.Date,
     required: true,
@@ -35,19 +39,78 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
-  rollCall: [
+  workSestions: [
     {
-      type: Schema.Types.ObjectId,
-      ref: "RollCall",
+      checkIn: {
+        type: Schema.Types.Date,
+        required: true,
+      },
+      CheckOut: Schema.Types.Date,
+      workPos: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
+  annualLeaveRegisters: [
+    {
+      dayOff: {
+        type: Schema.Types.Date,
+        required: true,
+      },
+      reason: {
+        type: String,
+        required: true,
+      },
+      duration: {
+        type: Schema.Types.Date,
+        required: true,
+      },
+    },
+  ],
+
+  tempInfor: [
+    {
+      temp: {
+        type: Schema.Types.Number,
+        required: true,
+      },
+      time: {
+        type: Schema.Types.Date,
+        required: true,
+      },
+    },
+  ],
+
+  vaccinationInfor: [
+    {
+      injectionOrder: {
+        type: Schema.Types.Number,
+        required: true,
+      },
+      vaccinationType: {
+        type: String,
+        required: true,
+      },
+      injectionDate: {
+        type: Schema.Types.Date,
+        required: true,
+      },
+    },
+  ],
+
+  postiveCodvid: [
+    {
+      positiveDate: {
+        type: Schema.Types.Date,
+        required: true,
+      },
+      injectionTimes: {
+        type: Number,
+        required: true,
+      },
     },
   ],
 });
-
-userSchema.methods.addToRollCall = function (rollCall) {
-  const updatedRollCall = [...this.rollCall];
-  updatedRollCall.push(rollCall._id);
-  this.rollCall = updatedRollCall;
-  return this.save();
-};
 
 module.exports = mongoose.model("User", userSchema);

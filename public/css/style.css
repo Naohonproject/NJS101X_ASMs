@@ -31,3 +31,17 @@
 .status {
   text-align: center;
 }
+
+table {
+  width: 300px;
+  margin: auto;
+}
+
+tr {
+  border: #ccc solid 1px;
+  height: 5px;
+}
+td {
+  width: 20px;
+  border: #ccc solid 1px;
+}

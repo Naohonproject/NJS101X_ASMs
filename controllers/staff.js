@@ -1,5 +1,6 @@
 // exports.getStaffInfor = (req, res, next) => {};
-const RollCall = require("../model/rollCall");
+
+// const RollCall = require("../model/rollCall");
 
 const isToday = (date) => {
   const today = new Date();
@@ -124,3 +125,17 @@ exports.getStaffRollCallInfor = (req, res, next) => {
 };
 
 exports.getAnnualLeaveForm = (req, res, next) => {};
+
+exports.getStaffProfile = (req, res, next) => {
+  res.render("profile", {
+    pageTitle: "profile",
+    path: "/profile",
+  });
+};
+
+exports.getCovidInforForms = (req, res, next) => {
+  res.render("covid", {
+    pageTitle: "Covid Infor",
+    path: "/covid",
+  });
+};

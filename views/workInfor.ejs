@@ -24,6 +24,42 @@
                     </tr>
                 </thead>
                 <tbody>
+                    <% workInfors.forEach(workInfor => { %>
+                    <tr>
+                        <td scope="col"><%= workInfor.date %></td>
+                        <td scope="col"><%= workInfor.workPlace %></td>
+                        <td scope="col"><%= workInfor.checkIn %></td>
+                         <td scope="col">
+                            <% if(workInfor.checkOut !== null) { %>
+                               <%= workInfor.checkOut %>
+                            <% } else { %>
+                                not yet
+                            <% } %>
+                        </td>
+                        <td scope="col">
+                            <% if(workInfor.duration !== null) { %>
+                               <%= workInfor.duration %>
+                            <% } else { %>
+                                -
+                            <% } %>
+                        </td>
+                        <td scope="col">
+                            <% if(workInfor.workTimeAndaAnnualLeave !== null && !isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
+                                <%= workInfor.workTimeAndaAnnualLeave %>
+                            <% } else { %>
+                                -
+                            <% } %>
+                        </td>
+                         <td scope="col">
+                            <% if(workInfor.overTime !== null) { %>
+                                <%= workInfor.overTime %>
+                            <% } else { %>
+                                -
+                            <% } %>
+                        </td>
+                        <td scope="col"><%= workInfor.registedAnnualTime %></td>
+                    </tr>
+                    <% }); %> 
                 </tbody>
             </table>  
         </div> 

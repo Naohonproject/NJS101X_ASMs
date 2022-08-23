@@ -104,10 +104,8 @@ exports.getStaffRollCallInfor = (req, res, next) => {
   );
 
   const workTimeOfSesstion = workSesstionToday.map((workSesstion) => {
-    const checkInTime = new Date(workSesstion.checkIn);
-    const checkOutTime = new Date(workSesstion.checkOut);
     const duration = Number(
-      ((checkOutTime - checkInTime) / 3600000).toFixed(2)
+      ((workSesstion.checkOut - workSesstion.checkIn) / 3600000).toFixed(2)
     );
     return duration;
   });
@@ -196,12 +194,75 @@ exports.getCovidInforForms = (req, res, next) => {
 };
 
 exports.getWorkInformation = (req, res, next) => {
-  const workInfor = req.staff.workSesstions.map((workSesstion) => {
+  const workInfors = req.staff.workSesstions.map((workSesstion, index) => {
+    let isLastWorkSesstionOfDay = false;
+    let totalTimeWorking = null;
+    let overTime = null;
+
+    if (index === req.staff.workSesstions.length - 1) {
+      isLastWorkSesstionOfDay = true;
+    } else {
+      if (
+        workSesstion.checkIn.toDateString() !==
+        req.staff.workSesstions[index + 1].checkIn.toDateString()
+      ) {
+        isLastWorkSesstionOfDay = true;
+      }
+    }
+
+    if (isLastWorkSesstionOfDay) {
+      const workDurationOfThisDay = req.staff.workSesstions
+        .filter((sesstion) => {
+          return (
+            sesstion.checkIn.toDateString() ===
+            workSesstion.checkIn.toDateString()
+          );
+        })
+        .map((register) => {
+          return Number(
+            ((register.checkOut - register.checkIn) / 3600000).toFixed(2)
+          );
+        });
+      totalTimeWorking = workDurationOfThisDay.reduce((prev, curr) => {
+        return prev + curr;
+      }, 0);
+    }
+
+    const annualLeavesDuration = req.staff.annualLeaveRegisters
+      .filter((register) => {
+        return (
+          register.dayOff.toDateString() === workSesstion.checkIn.toDateString()
+        );
+      })
+      .map((register) => {
+        return Number(register.duration);
+      });
+
+    let annualTimeOfDay = 0;
+
+    if (annualLeavesDuration.length > 0) {
+      annualTimeOfDay = annualLeavesDuration.reduce((prev, curr) => {
+        return prev + curr;
+      }, 0);
+    }
+
     const workSesstionDuration = workSesstion.checkOut
       ? Number(
           ((workSesstion.checkOut - workSesstion.checkIn) / 3600000).toFixed(2)
         )
       : null;
+
+    let workTimeAndaAnnualLeave = null;
+
+    if (totalTimeWorking !== null) {
+      workTimeAndaAnnualLeave = Number(
+        (annualTimeOfDay + totalTimeWorking).toFixed(3)
+      );
+    }
+
+    if (totalTimeWorking !== null && workTimeAndaAnnualLeave > 8) {
+      overTime = Number((workTimeAndaAnnualLeave - 8).toFixed(3));
+    }
 
     return {
       date: workSesstion.checkIn.toLocaleDateString(),
@@ -210,11 +271,15 @@ exports.getWorkInformation = (req, res, next) => {
         ? workSesstion.checkOut.toLocaleTimeString()
         : null,
       duration: workSesstionDuration,
+      registedAnnualTime: annualTimeOfDay,
+      workTimeAndaAnnualLeave: workTimeAndaAnnualLeave,
+      overTime: overTime,
+      workPlace: workSesstion.workPos,
     };
   });
-  console.log(workInfor);
   res.render("workInfor", {
     pageTitle: "Work Infor",
     path: "/workinfor",
+    workInfors: workInfors,
   });
 };

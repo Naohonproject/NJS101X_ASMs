@@ -33,7 +33,7 @@
                             <% if(workInfor.checkOut !== null) { %>
                                <%= workInfor.checkOut %>
                             <% } else { %>
-                                not yet
+                                Not Yet
                             <% } %>
                         </td>
                         <td scope="col">
@@ -46,7 +46,9 @@
                         <td scope="col">
                             <% if(workInfor.workTimeAndaAnnualLeave !== null && !isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
                                 <%= workInfor.workTimeAndaAnnualLeave %>
-                            <% } else { %>
+                            <% } else if (isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
+                                Not Yet
+                            <% } else { %> 
                                 -
                             <% } %>
                         </td>

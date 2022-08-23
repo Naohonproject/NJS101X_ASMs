@@ -29,6 +29,7 @@ exports.getStaffRollCallForm = (req, res, next) => {
       checkIn: "",
       workPos: "",
       checkOut: "",
+      annualLeave: req.staff.annualLeave,
     });
   } else {
     const lastWorkSesstionIndex = req.staff.workSesstions.length - 1;
@@ -50,6 +51,7 @@ exports.getStaffRollCallForm = (req, res, next) => {
       checkIn: localCheckInTime,
       workPos: lastWorkSesstion.workPos,
       checkOut: localCheckOutTime,
+      annualLeave: req.staff.annualLeave,
     });
   }
 };
@@ -72,14 +74,14 @@ exports.postStaffCheckIn = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
-exports.getStaffCheckIn = (req, res, next) => {
-  req.user
-    .populate("rollCall")
-    .then((user) => {
-      res.redirect("/rollcall");
-    })
-    .catch((error) => console.log(error));
-};
+// exports.getStaffCheckIn = (req, res, next) => {
+//   req.user
+//     .populate("rollCall")
+//     .then((user) => {
+//       res.redirect("/rollcall");
+//     })
+//     .catch((error) => console.log(error));
+// };
 
 exports.postStaffCheckout = (req, res, next) => {
   const lastWorkSesstionIndex = req.staff.workSesstions.length - 1;
@@ -134,21 +136,85 @@ exports.getStaffRollCallInfor = (req, res, next) => {
     }),
     pageTitle: "All Work Sesstion",
     path: "/rollcall",
+    annualLeave: req.staff.annualLeave,
   });
 };
 
-exports.getAnnualLeaveForm = (req, res, next) => {};
+exports.postAnnualLeaveForm = (req, res, next) => {
+  console.log(req.body);
+  const leaveDuration = Number(req.body.duration);
+  const leaveDate = new Date(req.body.leaveDate);
+
+  req.staff.annualLeave = req.staff.annualLeave - leaveDuration / 8;
+
+  const leaveInfor = {
+    dayOff: leaveDate,
+    reason: req.body.reasonDesc,
+    duration: leaveDuration / 8,
+  };
+  req.staff.annualLeaveRegisters.push(leaveInfor);
+
+  req.staff
+    .save()
+    .then(() => {
+      res.redirect("/");
+    })
+    .catch((error) => console.log(error));
+};
 
 exports.getStaffProfile = (req, res, next) => {
   res.render("profile", {
     pageTitle: "profile",
     path: "/profile",
+    id: req.staff._id,
+    name: req.staff.name,
+    doB: req.staff.doB.toLocaleDateString(),
+    startDate: req.staff.startDate.toLocaleDateString(),
+    salaryScale: req.staff.salaryScale,
+    department: req.staff.department,
+    annualLeave: req.staff.annualLeave,
+    imgUrl: req.staff.imageUrl,
   });
+};
+
+exports.postUpdatedProfile = (req, res, next) => {
+  const updatedImageUrl = req.body.imgUrl;
+  req.staff.imageUrl = updatedImageUrl;
+  req.staff
+    .save()
+    .then(() => {
+      res.redirect("/profile");
+    })
+    .catch((error) => console.log(error));
 };
 
 exports.getCovidInforForms = (req, res, next) => {
   res.render("covid", {
     pageTitle: "Covid Infor",
     path: "/covid",
+  });
+};
+
+exports.getWorkInformation = (req, res, next) => {
+  const workInfor = req.staff.workSesstions.map((workSesstion) => {
+    const workSesstionDuration = workSesstion.checkOut
+      ? Number(
+          ((workSesstion.checkOut - workSesstion.checkIn) / 3600000).toFixed(2)
+        )
+      : null;
+
+    return {
+      date: workSesstion.checkIn.toLocaleDateString(),
+      checkIn: workSesstion.checkIn.toLocaleTimeString(),
+      checkOut: workSesstion.checkOut
+        ? workSesstion.checkOut.toLocaleTimeString()
+        : null,
+      duration: workSesstionDuration,
+    };
+  });
+  console.log(workInfor);
+  res.render("workInfor", {
+    pageTitle: "Work Infor",
+    path: "/workinfor",
   });
 };

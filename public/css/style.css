@@ -68,3 +68,27 @@ td {
   padding: 12px;
   margin: auto;
 }
+
+.rollcall-table {
+  margin-top: 2rem;
+  width: 60%;
+}
+
+.rollcall-table th {
+  border: solid 1px #ccc;
+  text-align: center;
+}
+
+.rollcall-table td {
+  border: solid 1px #ccc;
+  text-align: center;
+}
+
+.infor {
+  background-color: #27a9d3;
+  text-align: center;
+  margin: auto;
+  width: 400px;
+  padding: 16px;
+  border-radius: 8px;
+}

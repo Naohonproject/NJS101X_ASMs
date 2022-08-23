@@ -6,7 +6,8 @@ const mongoose = require("mongoose");
 const checkRouter = require("./routers/rollCall");
 const profileRouter = require("./routers/profile");
 const covidRouter = require("./routers/covid");
-// const annualLeaveRouter = require("./routers/leave");
+const annualLeaveRouter = require("./routers/leave");
+const workInforRouter = require("./routers/workinfor");
 
 const staffController = require("./controllers/staffControllers");
 const Staff = require("./model/staffModel");
@@ -34,8 +35,8 @@ server.use((req, res, next) => {
 server.use("/rollcall", checkRouter);
 server.use(profileRouter);
 server.use(covidRouter);
-// server.use("/search", searchRouter);
-// server.use(annualLeaveRouter);
+server.use(workInforRouter);
+server.use(annualLeaveRouter);
 server.get("/", staffController.getIndex);
 
 mongoose

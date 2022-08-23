@@ -1,0 +1,42 @@
+<form action="/annual-leave-register" method="post">
+  <div class="mb-3">
+    <label for="leaveDate" class="form-label">Leave Date</label>
+    <input type="date" class="form-control" id="leaveDate" name="leaveDate" />
+  </div>
+
+  <div class="mb-3">
+    <label for="reasonDesc" class="form-label">Reason Description</label>
+    <textarea
+      name="reasonDesc"
+      class="form-control"
+      id="reasonDesc"
+      rows="3"
+    ></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label for="Remaining" class="form-label">Remaining Annual (Day)</label>
+    <input
+      class="form-control"
+      type="text"
+      id="Remaining"
+      value="<%=annualLeave%>"
+      aria-label="readonly input example"
+      readonly
+    />
+  </div>
+
+  <div class="mb-3">
+    <label for="duration" class="form-label">Duration (hour) </label>
+    <input
+      class="form-control"
+      max="<%= (annualLeave >= 1 ) ? 8 : (annualLeave*8) %>"
+      min="0.5"
+      step="0.5"
+      type="number"
+      name="duration"
+      id="duration"
+    />
+  </div>
+  <button type="submit" class="btn btn-outline-warning mt-3">Register</button>
+</form>

@@ -16,45 +16,43 @@
             <h3>
                 Staff Information
             </h3>
-        <form class="product-form" action="" method="POST">
+        <form class="form-profile" action="/update-profile" method="POST">
             <div class="form-control">
-                <label for="id">Id</label>
-                <input readonly type="text" name="id" id="title" value="2535">
+                <label for="id">Id :</label>
+                <input readonly type="text" id="id" value="<%= id %>">
             </div>  
             <div class="form-control">
-                <label for="imageUrl">Name</label>
-                <input type="text" name="name" id="imageUrl"  value="Le Tuan Bao">
+                <label for="name">Name :</label>
+                <input readonly type="text" id="name"  value="<%= name %>">
             </div>
              <div class="form-control">
-                <label for="doB">doB</label>
-                <input type="text" name="doB" id="doB"  value="2022-08-22">
+                <label for="doB">doB : </label>
+                <input readonly type="text" id="doB"  value="<%= doB %>">
             </div> 
             <div class="form-control">
-                <label for="salaryScale">Salary Scale </label>
-                <input type="text" name="salaryScale" id="salaryScale"  value="3.2">
+                <label for="salaryScale">Salary Scale : </label>
+                <input readonly type="text" id="salaryScale"  value="<%= salaryScale %>">
             </div>
 
             <div class="form-control">
-                <label for="startDate">startDate </label>
-                <input type="text" name="startDate" id="startDate"  value="2022-08-22">
+                <label for="startDate">startDate : </label>
+                <input readonly type="text" id="startDate"  value="<%= startDate %>">
             </div>
             
              <div class="form-control">
-                <label for="dept">Department</label>
-                <input type="text" name="dept" id="dept"  value="IT">
+                <label for="dept">Department :</label>
+                <input readonly type="text" id="dept"  value="<%= department %>">
             </div>
 
             <div class="form-control">
-                <label for="dept">annual Leave</label>
-                <input type="text" name="annualLeave" id="annualLeave"  value="11">
+                <label for="dept">annual Leave :</label>
+                <input readonly type="text" id="annualLeave"  value="<%= annualLeave %>">
             </div>
-             
-             
              <div class="form-control">
-                <label for="imgUrl">Image URL</label>
-                <input type="text" name="imgUrl" id="imgUrl"  value="//https">
+                <label for="imgUrl">Image URL :</label>
+                <input class="last-input" type="text" name="imgUrl" id="imgUrl"  value="<%= imgUrl %>">
             </div>  
-            <button type="button" class="btn btn-info">Update</button>
+            <button type="submit" class="btn btn-info">Update</button>
         </div>
     </main>
 <%- include('./includes/end.ejs') %>

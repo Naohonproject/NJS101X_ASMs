@@ -3,6 +3,6 @@ const staffController = require("../controllers/staffControllers");
 
 const router = express.Router();
 
-router.post("/annual-leave-register", staffController.postAnnualLeaveForm);
+router.get("/workinfor", staffController.getWorkInformation);
 
 module.exports = router;

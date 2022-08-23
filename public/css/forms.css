@@ -9,9 +9,20 @@
   text-align: start;
 }
 
+input:focus {
+  outline: none !important;
+}
+
 .form-control input {
+  border-width: 0px;
   border: none;
-  margin-bottom: 0.1rem;
+  outline: 0;
+  flex-basis: 70%;
+  background-color: #eee;
+}
+
+.form-control input.last-input {
+  background-color: #fff;
 }
 
 .form-control input,
@@ -24,4 +35,11 @@
 .form-control input:focus,
 .form-control textarea:focus {
   outline-color: #00695c;
+}
+
+.form-profile {
+  width: 32rem;
+  max-width: 90%;
+  margin: auto;
+  display: block;
 }

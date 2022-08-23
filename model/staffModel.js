@@ -32,7 +32,7 @@ const staffSchema = new Schema({
     requird: true,
   },
   annualLeave: {
-    type: Number,
+    type: Schema.Types.Decimal128,
     required: true,
   },
   imageUrl: {
@@ -63,7 +63,7 @@ const staffSchema = new Schema({
         required: true,
       },
       duration: {
-        type: Schema.Types.Date,
+        type: Schema.Types.Decimal128,
         required: true,
       },
     },

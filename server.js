@@ -8,6 +8,7 @@ const profileRouter = require("./routers/profile");
 const covidRouter = require("./routers/covid");
 const annualLeaveRouter = require("./routers/leave");
 const workInforRouter = require("./routers/workinfor");
+const salaryQueryRouter = require("./routers/salaryQuery");
 
 const staffController = require("./controllers/staffControllers");
 const Staff = require("./model/staffModel");
@@ -37,6 +38,7 @@ server.use(profileRouter);
 server.use(covidRouter);
 server.use(workInforRouter);
 server.use(annualLeaveRouter);
+server.use(salaryQueryRouter);
 server.get("/", staffController.getIndex);
 
 mongoose

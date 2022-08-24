@@ -3,67 +3,87 @@
     <link rel="stylesheet" href="/css/check.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/modal.css">
+    <link rel="stylesheet" href="/css/forms.css">
 </head>
 
 <body>
     <%- include('./includes/navigation.ejs') %>
 
     <main>
-        <div>   
-            <table class="table table-striped rollcall-table">
-                <thead>
-                    <tr>
-                        <th scope="col">Work Date</th>
-                        <th scope="col">Work Place</th>
-                        <th scope="col">Check In Time </th>
-                        <th scope="col">Check Out Time </th>
-                        <th scope="col">Sesstion Duration</th>
-                        <th scope="col">Total Work Time</th>
-                        <th scope="col">Over Time</th>
-                        <th scope="col">Annaul Leave</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% workInfors.forEach(workInfor => { %>
-                    <tr>
-                        <td scope="col"><%= workInfor.date %></td>
-                        <td scope="col"><%= workInfor.workPlace %></td>
-                        <td scope="col"><%= workInfor.checkIn %></td>
-                         <td scope="col">
-                            <% if(workInfor.checkOut !== null) { %>
-                               <%= workInfor.checkOut %>
-                            <% } else { %>
-                                Not Yet
-                            <% } %>
-                        </td>
-                        <td scope="col">
-                            <% if(workInfor.duration !== null) { %>
-                               <%= workInfor.duration %>
-                            <% } else { %>
-                                -
-                            <% } %>
-                        </td>
-                        <td scope="col">
-                            <% if(workInfor.workTimeAndaAnnualLeave !== null && !isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
-                                <%= workInfor.workTimeAndaAnnualLeave %>
-                            <% } else if (isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
-                                Not Yet
-                            <% } else { %> 
-                                -
-                            <% } %>
-                        </td>
-                         <td scope="col">
-                            <% if(workInfor.overTime !== null) { %>
-                                <%= workInfor.overTime %>
-                            <% } else { %>
-                                -
-                            <% } %>
-                        </td>
-                        <td scope="col"><%= workInfor.registedAnnualTime %></td>
-                    </tr>
-                    <% }); %> 
-                </tbody>
-            </table>  
-        </div> 
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 col-lg-8 work-infor">   
+                    <h2 style="text-align: center;">Work Time Information</h2>
+                    <table class="table table-striped rollcall-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Work Date</th>
+                                <th scope="col">Work Place</th>
+                                <th scope="col">Check In Time </th>
+                                <th scope="col">Check Out Time </th>
+                                <th scope="col">Sesstion Duration</th>
+                                <th scope="col">Total Work Time</th>
+                                <th scope="col">Over Time</th>
+                                <th scope="col">Annaul Leave</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% workInfors.forEach(workInfor => { %>
+                            <tr>
+                                <td scope="col"><%= workInfor.date %></td>
+                                <td scope="col"><%= workInfor.workPlace %></td>
+                                <td scope="col"><%= workInfor.checkIn %></td>
+                                 <td scope="col">
+                                    <% if(workInfor.checkOut !== null) { %>
+                                       <%= workInfor.checkOut %>
+                                    <% } else { %>
+                                        Not Y   et
+                                    <% } %>
+                                </td>
+                                <td scope="col">
+                                    <% if(workInfor.duration !== null) { %>
+                                       <%= workInfor.duration %>
+                                    <% } else { %>
+                                        -
+                                    <% } %>
+                                </td>
+                                <td scope="col">
+                                    <% if(workInfor.workTimeAndaAnnualLeave !== null && !isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
+                                        <%= workInfor.workTimeAndaAnnualLeave %>
+                                    <% } else if (isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
+                                        Not Yet
+                                    <% } else { %> 
+                                        -
+                                    <% } %>
+                                </td>
+                                 <td scope="col">
+                                    <% if(workInfor.overTime !== null) { %>
+                                        <%= workInfor.overTime %>
+                                    <% } else { %>
+                                        -
+                                    <% } %>
+                                </td>
+                                <td scope="col"><%= workInfor.registedAnnualTime %></td>
+                            </tr>
+                            <% }); %> 
+                        </tbody>
+                    </table>  
+                </div>
+                <div class="col-md-12 col-lg-4 ">
+                     <h2 style="text-align: center;">Salary Query</h2>
+                    <form class="form-profile salary-form" action="/salary-month" method="POST">
+                        <div class="form-control">
+                            <label for="month">Choose Month : </label>
+                            <Select name="chooseMonth" id="month">
+                                <% workMonths.forEach((month,index) => { %>
+                                    <option <% if(index === 0){ %> selected <% } %>  value="<%= month %>"> <%= month %> </option>   
+                                <% }) %>                    
+                            </Select>
+                        </div>       
+                        <button type="submit" class="btn btn-info">Query</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </main>
 <%- include('./includes/end.ejs') %>

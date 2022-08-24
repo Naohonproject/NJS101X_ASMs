@@ -74,15 +74,6 @@ exports.postStaffCheckIn = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
-// exports.getStaffCheckIn = (req, res, next) => {
-//   req.user
-//     .populate("rollCall")
-//     .then((user) => {
-//       res.redirect("/rollcall");
-//     })
-//     .catch((error) => console.log(error));
-// };
-
 exports.postStaffCheckout = (req, res, next) => {
   const lastWorkSesstionIndex = req.staff.workSesstions.length - 1;
   req.staff.workSesstions[lastWorkSesstionIndex].checkOut = Date.now();
@@ -193,7 +184,26 @@ exports.getCovidInforForms = (req, res, next) => {
   });
 };
 
+function getUnique(array) {
+  var uniqueArray = [];
+
+  for (i = 0; i < array.length; i++) {
+    if (uniqueArray.indexOf(array[i]) === -1) {
+      uniqueArray.push(array[i]);
+    }
+  }
+  return uniqueArray;
+}
+
+const getWorkSessionInfor = (workSessions) => {};
+
 exports.getWorkInformation = (req, res, next) => {
+  const months = req.staff.workSesstions.map((workSesstion) => {
+    return workSesstion.checkIn.getMonth() + 1;
+  });
+
+  const workMonths = getUnique(months);
+
   const workInfors = req.staff.workSesstions.map((workSesstion, index) => {
     let isLastWorkSesstionOfDay = false;
     let totalTimeWorking = null;
@@ -277,9 +287,21 @@ exports.getWorkInformation = (req, res, next) => {
       workPlace: workSesstion.workPos,
     };
   });
+
   res.render("workInfor", {
     pageTitle: "Work Infor",
     path: "/workinfor",
     workInfors: workInfors,
+    workMonths: workMonths,
   });
+};
+
+exports.postQuerySalaryMonth = (req, res, next) => {
+  const chooseMonth = Number(req.body.chooseMonth);
+  const chooseWorkSesstion = req.staff.workSesstions.filter((workSesstion) => {
+    return workSesstion.checkIn.getMonth() + 1 === chooseMonth;
+  });
+
+  console.log(chooseWorkSesstion);
+  res.redirect("/");
 };

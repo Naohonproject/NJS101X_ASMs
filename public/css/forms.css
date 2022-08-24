@@ -5,7 +5,6 @@
 }
 
 .form-control label {
-  flex-basis: 40%;
   text-align: start;
 }
 
@@ -17,7 +16,6 @@ input:focus {
   border-width: 0px;
   border: none;
   outline: 0;
-  flex-basis: 70%;
   background-color: #eee;
 }
 
@@ -42,4 +40,25 @@ input:focus {
   max-width: 90%;
   margin: auto;
   display: block;
+}
+
+.salary-form {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+/* .salary-form button {
+  margin-left: 50%;
+} */
+
+.form-control label {
+  flex-basis: 35%;
+  flex-shrink: 1;
+  flex-grow: 1;
+}
+.form-control input,
+select {
+  flex-basis: 65%;
+  flex-shrink: 2;
+  flex-grow: 2;
 }

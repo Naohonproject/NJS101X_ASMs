@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
+// definde staffModle
 const staffSchema = new Schema({
   name: {
     type: String,
@@ -113,4 +114,5 @@ const staffSchema = new Schema({
   ],
 });
 
+// export outside of module to create the instance of database
 module.exports = mongoose.model("Staff", staffSchema);

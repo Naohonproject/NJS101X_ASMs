@@ -1,9 +1,7 @@
-// exports.getStaffInfor = (req, res, next) => {};
-
-// const RollCall = require("../model/rollCall");
-
+// import the sub funcions firm utils folder
 const { isToday, getUnique, getWorkSessionInfor } = require("../utils/subFunc");
 
+// controller render home page
 exports.getIndex = (req, res, next) => {
   res.render("index", {
     pageTitle: "index",
@@ -11,6 +9,7 @@ exports.getIndex = (req, res, next) => {
   });
 };
 
+// controller to render rollcall page
 exports.getStaffRollCallForm = (req, res, next) => {
   let status = "off";
   console.log(req.staff.name);
@@ -50,6 +49,7 @@ exports.getStaffRollCallForm = (req, res, next) => {
   }
 };
 
+// controllder to post staff checkin to db, then save it , after that rerender rollcal page to update new status of staff working status
 exports.postStaffCheckIn = (req, res, next) => {
   const workPostion = req.body.workPosition;
   const checkIn = Date.now();
@@ -68,6 +68,7 @@ exports.postStaffCheckIn = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
+// post staff checkout then render the infor of all rollcalls of this day(realtime)
 exports.postStaffCheckout = (req, res, next) => {
   const lastWorkSesstionIndex = req.staff.workSesstions.length - 1;
   req.staff.workSesstions[lastWorkSesstionIndex].checkOut = Date.now();
@@ -82,8 +83,10 @@ exports.postStaffCheckout = (req, res, next) => {
     });
 };
 
+// get all the rollcall of today, then render it to views
 exports.getStaffRollCallInfor = (req, res, next) => {
   const workSestions = req.staff.workSesstions;
+  // filter from all worksession ,by using isToday function to filting the worksesstions
   const workSesstionToday = workSestions.filter((workSession) =>
     isToday(workSession.checkIn)
   );
@@ -123,6 +126,7 @@ exports.getStaffRollCallInfor = (req, res, next) => {
   });
 };
 
+// controller to post aunnual leave register form
 exports.postAnnualLeaveForm = (req, res, next) => {
   console.log(req.body);
   const leaveDuration = Number(req.body.duration);
@@ -145,6 +149,7 @@ exports.postAnnualLeaveForm = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
+// controllder to get all the staff in for to render profile page
 exports.getStaffProfile = (req, res, next) => {
   res.render("profile", {
     pageTitle: "profile",
@@ -160,6 +165,7 @@ exports.getStaffProfile = (req, res, next) => {
   });
 };
 
+// controller to post the updated information of staff, then redirect to the profile page to see the updated infor
 exports.postUpdatedProfile = (req, res, next) => {
   const updatedImageUrl = req.body.imgUrl;
   req.staff.imageUrl = updatedImageUrl;
@@ -171,18 +177,22 @@ exports.postUpdatedProfile = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
+// controller to get the infor mation of each worksestion
 exports.getWorkInformation = (req, res, next) => {
   const months = req.staff.workSesstions.map((workSesstion) => {
     return workSesstion.checkIn.getMonth() + 1;
   });
 
+  // get the months of staff working time
   const workMonths = getUnique(months);
 
+  // get workin infor
   const workInfors = getWorkSessionInfor(
     req.staff.workSesstions,
     req.staff.annualLeaveRegisters
   );
 
+  // render the working time page with months, and working infor of each worksesstion
   res.render("workInfor", {
     pageTitle: "Work Infor",
     path: "/workinfor",
@@ -191,12 +201,14 @@ exports.getWorkInformation = (req, res, next) => {
   });
 };
 
+// const post the salary query by dedicated month , by the form in working time page
 exports.postQuerySalaryMonth = (req, res, next) => {
   const chooseMonth = Number(req.body.chooseMonth);
   const chooseWorkSesstion = req.staff.workSesstions.filter((workSesstion) => {
     return workSesstion.checkIn.getMonth() + 1 === chooseMonth;
   });
 
+  // reuse getWorkSesstionInfor function , but not on all worksesstions, using it on the worksession of the pointed month
   const workInfors = getWorkSessionInfor(
     chooseWorkSesstion,
     req.staff.annualLeaveRegisters
@@ -211,14 +223,14 @@ exports.postQuerySalaryMonth = (req, res, next) => {
     }
   });
 
-  console.log(lastWorkSesstionOfDay);
-
   const workTimeOfDay = lastWorkSesstionOfDay.map((infor) => {
     return infor.workTimeAndaAnnualLeave;
   });
 
   const shortages = [];
   const overTimes = [];
+
+  // detect the over time and shortage time of each working day
 
   workTimeOfDay.forEach((workTime) => {
     if (workTime > 8) {
@@ -229,20 +241,27 @@ exports.postQuerySalaryMonth = (req, res, next) => {
     }
   });
 
+  // get total over time of the month
+
   const overTimeOfMonth = overTimes.reduce((prev, curr) => {
     return prev + curr;
   }, 0);
+
+  // get total shortage of the month
 
   const shortagesOfMonth = shortages.reduce((prev, curr) => {
     return prev + curr;
   }, 0);
 
+  // calc the salary by the below function
   const salaryScale = req.staff.salaryScale;
   const salaryOfMonth =
     salaryScale * 3000000 + (overTimeOfMonth - shortagesOfMonth) * 200000;
 
+  // use to format number to money string format,the dollar format
   let dollarUSLocale = Intl.NumberFormat("en-US");
 
+  // render the salary query result
   res.render("salaryOfMonth", {
     pageTitle: "Detail Salary",
     path: "/workinfor",

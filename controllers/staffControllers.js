@@ -171,13 +171,6 @@ exports.postUpdatedProfile = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
-exports.getCovidInforForms = (req, res, next) => {
-  res.render("covid", {
-    pageTitle: "Covid Infor",
-    path: "/covid",
-  });
-};
-
 exports.getWorkInformation = (req, res, next) => {
   const months = req.staff.workSesstions.map((workSesstion) => {
     return workSesstion.checkIn.getMonth() + 1;
@@ -213,9 +206,12 @@ exports.postQuerySalaryMonth = (req, res, next) => {
 
   workInfors.forEach((workInfor) => {
     if (workInfor.workTimeAndaAnnualLeave !== null) {
-      lastWorkSesstionOfDay.push(workInfor);
+      if (!isNaN(workInfor.workTimeAndaAnnualLeave))
+        lastWorkSesstionOfDay.push(workInfor);
     }
   });
+
+  console.log(lastWorkSesstionOfDay);
 
   const workTimeOfDay = lastWorkSesstionOfDay.map((infor) => {
     return infor.workTimeAndaAnnualLeave;
@@ -255,4 +251,93 @@ exports.postQuerySalaryMonth = (req, res, next) => {
     shortagesOfMonth: shortagesOfMonth,
     overTimeOfMonth: overTimeOfMonth,
   });
+};
+
+/**Logic for MH4 */
+
+/**
+ * Get Covid Page
+ * get /covid
+ * */
+
+exports.getCovidInforForms = (req, res, next) => {
+  res.render("covid/covid", {
+    pageTitle: "Covid Infor",
+    path: "/covid",
+  });
+};
+
+// POST /covid/tempInfor
+
+exports.postTempInfor = (req, res, next) => {
+  const tempInfor = {
+    temp: Number(req.body.temp),
+    time: req.body.registerTime,
+  };
+  req.staff.tempInfor.push(tempInfor);
+
+  req.staff
+    .save()
+    .then((updatedStaff) => {
+      const tempRegisterInfors = updatedStaff.tempInfor;
+
+      const tempRegisterDetails = tempRegisterInfors.map((tempInfor) => {
+        return {
+          date: tempInfor.time.toLocaleDateString(),
+          time: tempInfor.time.toLocaleTimeString(),
+          temp: tempInfor.temp,
+        };
+      });
+
+      res.render("covid/tempCheckList", {
+        pageTitle: "Staff Temperature Check List ",
+        path: "/covid",
+        tempRegisterDetails: tempRegisterDetails,
+      });
+    })
+    .catch((error) => console.log(error));
+};
+
+exports.postStaffInjectionInfor = (req, res, next) => {
+  const injectionInfor = {
+    injectionOrder: req.body.injectionTime,
+    vaccinationType: req.body.vaccineType,
+    injectionDate: req.body.injectionDate,
+  };
+  req.staff.vaccinationInfor.push(injectionInfor);
+
+  req.staff
+    .save()
+    .then((updatedStaff) => {
+      const injectionInfors = updatedStaff.vaccinationInfor;
+
+      res.render("covid/vaccinationInfor", {
+        pageTitle: "Staff injected vaccination List ",
+        path: "/covid",
+        injectionInfors: injectionInfors,
+      });
+    })
+    .catch((error) => console.log(error));
+};
+
+exports.postCovid19PositiveInfor = (req, res, next) => {
+  const covidInfor = {
+    injectionTimes: req.body.numberOfVacination,
+    positiveDate: req.body.positiveDate,
+  };
+
+  req.staff.postiveCodvid.push(covidInfor);
+
+  req.staff
+    .save()
+    .then((updatedStaff) => {
+      const covidInfors = updatedStaff.postiveCodvid;
+
+      res.render("covid/covidPositiveInfor", {
+        pageTitle: "Positive Covid Infor",
+        path: "/covid",
+        covidInfors: covidInfors,
+      });
+    })
+    .catch((error) => console.log(error));
 };

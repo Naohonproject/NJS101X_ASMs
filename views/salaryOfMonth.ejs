@@ -1,0 +1,40 @@
+<%- include('./includes/head.ejs') %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/check.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/modal.css">
+    <link rel="stylesheet" href="/css/forms.css">
+</head>
+
+<body>
+    <%- include('./includes/navigation.ejs') %>
+
+    <main>
+        <div>
+            <h2 style="text-align: center;">Salary Detail</h2>
+            <div class="form-profile salary-form">
+                <div class="form-control">
+                    <label for="salaryScale">Salary Scale :</label>
+                    <p><%= salaryScale %></p>
+                    <!-- <input readonly type="text" id="salaryScale"  value="<%= salaryScale %>"> -->
+                </div>
+                <div class="form-control">
+                    <label for="overTime">Over Time : </label>
+                    <p><%= overTimeOfMonth %> hours</p>
+
+                    <!-- <input readonly type="text" id="overTime"  value="<%= overTimeOfMonth %>"> -->
+                </div> 
+                <div class="form-control">
+                    <label for="Shortage">Shortage Time  : </label>
+                    <p><%= shortagesOfMonth %> hours</p>
+                    <!-- <input readonly type="text" id="Shortage"  value="<%= shortagesOfMonth %>"> -->
+                </div>
+                <div class="form-control">
+                    <label for="Salary">Salary : </label>
+                    <p><%= salaryOfMonth %> VND</p>
+                    <!-- <input readonly type="text" id="Salary"  value="<%= salaryOfMonth %>"> -->
+                </div>                    
+            </div>
+        </div>
+    </main>
+<%- include('./includes/end.ejs') %>

@@ -2,13 +2,7 @@
 
 // const RollCall = require("../model/rollCall");
 
-const isToday = (date) => {
-  const today = new Date();
-  if (today.toDateString() === date.toDateString()) {
-    return true;
-  }
-  return false;
-};
+const { isToday, getUnique, getWorkSessionInfor } = require("../utils/subFunc");
 
 exports.getIndex = (req, res, next) => {
   res.render("index", {
@@ -184,19 +178,6 @@ exports.getCovidInforForms = (req, res, next) => {
   });
 };
 
-function getUnique(array) {
-  var uniqueArray = [];
-
-  for (i = 0; i < array.length; i++) {
-    if (uniqueArray.indexOf(array[i]) === -1) {
-      uniqueArray.push(array[i]);
-    }
-  }
-  return uniqueArray;
-}
-
-const getWorkSessionInfor = (workSessions) => {};
-
 exports.getWorkInformation = (req, res, next) => {
   const months = req.staff.workSesstions.map((workSesstion) => {
     return workSesstion.checkIn.getMonth() + 1;
@@ -204,89 +185,10 @@ exports.getWorkInformation = (req, res, next) => {
 
   const workMonths = getUnique(months);
 
-  const workInfors = req.staff.workSesstions.map((workSesstion, index) => {
-    let isLastWorkSesstionOfDay = false;
-    let totalTimeWorking = null;
-    let overTime = null;
-
-    if (index === req.staff.workSesstions.length - 1) {
-      isLastWorkSesstionOfDay = true;
-    } else {
-      if (
-        workSesstion.checkIn.toDateString() !==
-        req.staff.workSesstions[index + 1].checkIn.toDateString()
-      ) {
-        isLastWorkSesstionOfDay = true;
-      }
-    }
-
-    if (isLastWorkSesstionOfDay) {
-      const workDurationOfThisDay = req.staff.workSesstions
-        .filter((sesstion) => {
-          return (
-            sesstion.checkIn.toDateString() ===
-            workSesstion.checkIn.toDateString()
-          );
-        })
-        .map((register) => {
-          return Number(
-            ((register.checkOut - register.checkIn) / 3600000).toFixed(2)
-          );
-        });
-      totalTimeWorking = workDurationOfThisDay.reduce((prev, curr) => {
-        return prev + curr;
-      }, 0);
-    }
-
-    const annualLeavesDuration = req.staff.annualLeaveRegisters
-      .filter((register) => {
-        return (
-          register.dayOff.toDateString() === workSesstion.checkIn.toDateString()
-        );
-      })
-      .map((register) => {
-        return Number(register.duration);
-      });
-
-    let annualTimeOfDay = 0;
-
-    if (annualLeavesDuration.length > 0) {
-      annualTimeOfDay = annualLeavesDuration.reduce((prev, curr) => {
-        return prev + curr;
-      }, 0);
-    }
-
-    const workSesstionDuration = workSesstion.checkOut
-      ? Number(
-          ((workSesstion.checkOut - workSesstion.checkIn) / 3600000).toFixed(2)
-        )
-      : null;
-
-    let workTimeAndaAnnualLeave = null;
-
-    if (totalTimeWorking !== null) {
-      workTimeAndaAnnualLeave = Number(
-        (annualTimeOfDay + totalTimeWorking).toFixed(3)
-      );
-    }
-
-    if (totalTimeWorking !== null && workTimeAndaAnnualLeave > 8) {
-      overTime = Number((workTimeAndaAnnualLeave - 8).toFixed(3));
-    }
-
-    return {
-      date: workSesstion.checkIn.toLocaleDateString(),
-      checkIn: workSesstion.checkIn.toLocaleTimeString(),
-      checkOut: workSesstion.checkOut
-        ? workSesstion.checkOut.toLocaleTimeString()
-        : null,
-      duration: workSesstionDuration,
-      registedAnnualTime: annualTimeOfDay,
-      workTimeAndaAnnualLeave: workTimeAndaAnnualLeave,
-      overTime: overTime,
-      workPlace: workSesstion.workPos,
-    };
-  });
+  const workInfors = getWorkSessionInfor(
+    req.staff.workSesstions,
+    req.staff.annualLeaveRegisters
+  );
 
   res.render("workInfor", {
     pageTitle: "Work Infor",
@@ -302,6 +204,55 @@ exports.postQuerySalaryMonth = (req, res, next) => {
     return workSesstion.checkIn.getMonth() + 1 === chooseMonth;
   });
 
-  console.log(chooseWorkSesstion);
-  res.redirect("/");
+  const workInfors = getWorkSessionInfor(
+    chooseWorkSesstion,
+    req.staff.annualLeaveRegisters
+  );
+
+  const lastWorkSesstionOfDay = [];
+
+  workInfors.forEach((workInfor) => {
+    if (workInfor.workTimeAndaAnnualLeave !== null) {
+      lastWorkSesstionOfDay.push(workInfor);
+    }
+  });
+
+  const workTimeOfDay = lastWorkSesstionOfDay.map((infor) => {
+    return infor.workTimeAndaAnnualLeave;
+  });
+
+  const shortages = [];
+  const overTimes = [];
+
+  workTimeOfDay.forEach((workTime) => {
+    if (workTime > 8) {
+      overTimes.push(workTime - 8);
+    }
+    if (workTime < 8) {
+      shortages.push(8 - workTime);
+    }
+  });
+
+  const overTimeOfMonth = overTimes.reduce((prev, curr) => {
+    return prev + curr;
+  }, 0);
+
+  const shortagesOfMonth = shortages.reduce((prev, curr) => {
+    return prev + curr;
+  }, 0);
+
+  const salaryScale = req.staff.salaryScale;
+  const salaryOfMonth =
+    salaryScale * 3000000 + (overTimeOfMonth - shortagesOfMonth) * 200000;
+
+  let dollarUSLocale = Intl.NumberFormat("en-US");
+
+  res.render("salaryOfMonth", {
+    pageTitle: "Detail Salary",
+    path: "/workinfor",
+    salaryScale: salaryScale,
+    salaryOfMonth: dollarUSLocale.format(salaryOfMonth),
+    shortagesOfMonth: shortagesOfMonth,
+    overTimeOfMonth: overTimeOfMonth,
+  });
 };

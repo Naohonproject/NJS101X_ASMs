@@ -1,21 +1,4 @@
-function getUnique(array) {
-  var uniqueArray = [];
-
-  // Loop through array values
-  for (i = 0; i < array.length; i++) {
-    if (uniqueArray.indexOf(array[i]) === -1) {
-      uniqueArray.push(array[i]);
-    }
-  }
-  return uniqueArray;
-}
-
-const arr = [1, 3, 3, 3, 2, 4];
-
-console.log(getUnique(arr));
-// ////////////////////////////////////////////////////////////////
-
-const getWorkSessionInfor = (workSesstions) => {
+const getWorkSessionInfor = (workSesstions, annualLeaveRegisters) => {
   const workInfors = workSesstions.map((workSesstion, index) => {
     let isLastWorkSesstionOfDay = false;
     let totalTimeWorking = null;
@@ -50,7 +33,7 @@ const getWorkSessionInfor = (workSesstions) => {
       }, 0);
     }
 
-    const annualLeavesDuration = req.staff.annualLeaveRegisters
+    const annualLeavesDuration = annualLeaveRegisters
       .filter((register) => {
         return (
           register.dayOff.toDateString() === workSesstion.checkIn.toDateString()
@@ -102,3 +85,26 @@ const getWorkSessionInfor = (workSesstions) => {
 
   return workInfors;
 };
+
+function getUnique(array) {
+  var uniqueArray = [];
+
+  for (i = 0; i < array.length; i++) {
+    if (uniqueArray.indexOf(array[i]) === -1) {
+      uniqueArray.push(array[i]);
+    }
+  }
+  return uniqueArray;
+}
+
+const isToday = (date) => {
+  const today = new Date();
+  if (today.toDateString() === date.toDateString()) {
+    return true;
+  }
+  return false;
+};
+
+exports.isToday = isToday;
+exports.getUnique = getUnique;
+exports.getWorkSessionInfor = getWorkSessionInfor;

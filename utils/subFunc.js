@@ -2,7 +2,7 @@
 const getWorkSessionInfor = (workSesstions, annualLeaveRegisters) => {
   // take workSesstion form arg then mapping to take out put
   const workInfors = workSesstions.map((workSesstion, index) => {
-    // set flags, if worksesstion is the lastsesstion of the day, these flage will change then let us detect overtime,wor time of day
+    // set flags, if worksesstion is the lastsesstion of the day, these flage will change then let us detect overtime,work time of day
     let isLastWorkSesstionOfDay = false;
     let totalTimeWorking = null;
     let overTime = null;
@@ -61,7 +61,7 @@ const getWorkSessionInfor = (workSesstions, annualLeaveRegisters) => {
       }, 0);
     }
 
-    // some time , staff checkin but not check out yet, if not checkout ,set it to null
+    // some time , staff checkin but not check out yet, if not checkout ,set work duration of this worksession to null
     const workSesstionDuration = workSesstion.checkOut
       ? Number(
           ((workSesstion.checkOut - workSesstion.checkIn) / 3600000).toFixed(2)

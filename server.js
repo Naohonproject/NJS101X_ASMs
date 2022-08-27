@@ -3,7 +3,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const mongoose = require("mongoose");
 
-// import routers
+// import routers, use routes as middleware by server.use
 const checkRouter = require("./routers/rollCall");
 const profileRouter = require("./routers/profile");
 const covidRouter = require("./routers/covid");
@@ -51,6 +51,7 @@ server.use(workInforRouter);
 server.use(annualLeaveRouter);
 server.use(salaryQueryRouter);
 server.get("/", staffController.getIndex);
+server.use(staffController.getErrorPage);
 
 // connect to the db on mongodb by using mongoose and connection string, then create a user if there is no user at all,if it has a user, no create more
 mongoose

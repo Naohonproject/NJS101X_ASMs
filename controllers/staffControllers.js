@@ -12,7 +12,6 @@ exports.getIndex = (req, res, next) => {
 // controller to render rollcall page
 exports.getStaffRollCallForm = (req, res, next) => {
   let status = "off";
-  console.log(req.staff.name);
   if (req.staff.workSesstions.length === 0) {
     res.render("rollCall", {
       pageTitle: "rollCall",
@@ -269,6 +268,7 @@ exports.postQuerySalaryMonth = (req, res, next) => {
     salaryOfMonth: dollarUSLocale.format(salaryOfMonth),
     shortagesOfMonth: shortagesOfMonth,
     overTimeOfMonth: overTimeOfMonth,
+    chooseMonth: chooseMonth,
   });
 };
 
@@ -359,4 +359,12 @@ exports.postCovid19PositiveInfor = (req, res, next) => {
       });
     })
     .catch((error) => console.log(error));
+};
+
+// logic for not match url
+exports.getErrorPage = (req, res, next) => {
+  res.render("404", {
+    pageTitle: "index",
+    path: "/",
+  });
 };

@@ -125,27 +125,47 @@ exports.getStaffRollCallInfor = (req, res, next) => {
   });
 };
 
-// controller to post aunnual leave register form
+// controller to post annual leave register form
 exports.postAnnualLeaveForm = (req, res, next) => {
-  console.log(req.body);
   const leaveDuration = Number(req.body.duration);
-  const leaveDate = new Date(req.body.leaveDate);
+  const leaveDates = req.body.leaveDates.split(",").map((date) => {
+    return new Date(date);
+  });
 
-  req.staff.annualLeave = req.staff.annualLeave - leaveDuration / 8;
+  const numberOfLeaveDate = leaveDates.length;
 
-  const leaveInfor = {
-    dayOff: leaveDate,
-    reason: req.body.reasonDesc,
-    duration: leaveDuration / 8,
-  };
-  req.staff.annualLeaveRegisters.push(leaveInfor);
+  const leaveDateDetail = leaveDates.map((leaveDate) => {
+    return {
+      dayOff: leaveDate,
+      reason: req.body.reasonDesc,
+      duration: leaveDuration / 8,
+    };
+  });
 
-  req.staff
-    .save()
-    .then(() => {
+  req.staff.annualLeaveRegisters
+    .find({ dayOff: "2022-09-01T17:00:00.000Z" })
+    .then((dayoff) => {
+      if (dayoff) {
+        console.log(dayoff);
+        return res.redirect("/");
+      }
       res.redirect("/");
     })
-    .catch((error) => console.log(error));
+    .catch((error) => {
+      console.log(error);
+    });
+
+  // req.staff.req.staff.annualLeave =
+  //   req.staff.annualLeave - (leaveDuration * numberOfLeaveDate) / 8;
+
+  // req.staff.annualLeaveRegisters.push(...leaveDateDetail);
+
+  // req.staff
+  //   .save()
+  //   .then(() => {
+  //     res.redirect("/");
+  //   })
+  //   .catch((error) => console.log(error));
 };
 
 // controllder to get all the staff in for to render profile page

@@ -77,7 +77,7 @@ mongoose
           vaccinationInfor: [],
           postiveCodvid: [],
         });
-        user.save();
+        staff.save();
       }
 
       // after connect to mongodb successfully, let server listen the incoming request on port(that's 3000)

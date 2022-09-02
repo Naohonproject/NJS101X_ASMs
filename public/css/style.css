@@ -96,3 +96,16 @@ td {
 .work-infor {
   min-width: 100px;
 }
+
+.staff-infor {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.staff-infor__iamge {
+  width: 200px;
+  height: 200px;
+  text-align: center;
+  border-radius: 50%;
+}

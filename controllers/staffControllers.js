@@ -1,6 +1,6 @@
 // import the sub funcions firm utils folder
 const { isToday, getUnique, getWorkSessionInfor } = require("../utils/subFunc");
-
+const Staff = require("../model/staffModel");
 // controller render home page
 exports.getIndex = (req, res, next) => {
   res.render("index", {
@@ -142,33 +142,20 @@ exports.postAnnualLeaveForm = (req, res, next) => {
     };
   });
 
-  req.staff.annualLeaveRegisters
-    .find({ dayOff: "2022-09-01T17:00:00.000Z" })
-    .then((dayoff) => {
-      if (dayoff) {
-        console.log(dayoff);
-        return res.redirect("/");
-      }
+  req.staff.req.staff.annualLeave =
+    req.staff.annualLeave - (leaveDuration * numberOfLeaveDate) / 8;
+
+  req.staff.annualLeaveRegisters.push(...leaveDateDetail);
+
+  req.staff
+    .save()
+    .then(() => {
       res.redirect("/");
     })
-    .catch((error) => {
-      console.log(error);
-    });
-
-  // req.staff.req.staff.annualLeave =
-  //   req.staff.annualLeave - (leaveDuration * numberOfLeaveDate) / 8;
-
-  // req.staff.annualLeaveRegisters.push(...leaveDateDetail);
-
-  // req.staff
-  //   .save()
-  //   .then(() => {
-  //     res.redirect("/");
-  //   })
-  //   .catch((error) => console.log(error));
+    .catch((error) => console.log(error));
 };
 
-// controllder to get all the staff in for to render profile page
+// controller to get all the staff in for to render profile page
 exports.getStaffProfile = (req, res, next) => {
   res.render("profile", {
     pageTitle: "profile",
@@ -309,11 +296,20 @@ exports.getCovidInforForms = (req, res, next) => {
 // POST /covid/tempInfor
 
 exports.postTempInfor = (req, res, next) => {
-  const tempInfor = {
+  const newTemInfor = {
     temp: Number(req.body.temp),
-    time: req.body.registerTime,
+    time: new Date(req.body.registerTime),
   };
-  req.staff.tempInfor.push(tempInfor);
+
+  const douIndex = req.staff.tempInfor.findIndex((infor) => {
+    return infor.time.getTime() === newTemInfor.time.getTime();
+  });
+
+  if (douIndex > -1) {
+    req.staff.tempInfor[douIndex] = newTemInfor;
+  } else {
+    req.staff.tempInfor.push(newTemInfor);
+  }
 
   req.staff
     .save()
@@ -337,13 +333,38 @@ exports.postTempInfor = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
+exports.getTempInfor = (req, res, next) => {
+  const tempRegisterDetails = req.staff.tempInfor.map((tempInfor) => {
+    return {
+      date: tempInfor.time.toLocaleDateString(),
+      time: tempInfor.time.toLocaleTimeString(),
+      temp: tempInfor.temp,
+    };
+  });
+
+  res.render("covid/tempCheckList", {
+    pageTitle: "Staff Temperature Check List ",
+    path: "/covid",
+    tempRegisterDetails: tempRegisterDetails,
+  });
+};
+
 exports.postStaffInjectionInfor = (req, res, next) => {
   const injectionInfor = {
     injectionOrder: req.body.injectionTime,
     vaccinationType: req.body.vaccineType,
     injectionDate: req.body.injectionDate,
   };
-  req.staff.vaccinationInfor.push(injectionInfor);
+
+  const douIndex = req.staff.vaccinationInfor.findIndex((infor) => {
+    return infor.injectionOrder == injectionInfor.injectionOrder;
+  });
+
+  if (douIndex > -1) {
+    req.staff.vaccinationInfor[douIndex] = injectionInfor;
+  } else {
+    req.staff.vaccinationInfor.push(injectionInfor);
+  }
 
   req.staff
     .save()
@@ -359,19 +380,34 @@ exports.postStaffInjectionInfor = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
+exports.getStaffInjectionInfor = (req, res, next) => {
+  res.render("covid/vaccinationInfor", {
+    pageTitle: "Staff injected vaccination List ",
+    path: "/covid",
+    injectionInfors: req.staff.vaccinationInfor,
+  });
+};
+
 exports.postCovid19PositiveInfor = (req, res, next) => {
   const covidInfor = {
-    injectionTimes: req.body.numberOfVacination,
-    positiveDate: req.body.positiveDate,
+    injectionTimes: req.body.numberOfVaccination,
+    positiveDate: new Date(req.body.positiveDate),
   };
 
-  req.staff.postiveCodvid.push(covidInfor);
+  const douIndex = req.staff.positiveCovid.findIndex((infor) => {
+    return infor.positiveDate.getTime() === covidInfor.positiveDate.getTime();
+  });
+
+  if (douIndex > -1) {
+    req.staff.positiveCovid[douIndex] = covidInfor;
+  } else {
+    req.staff.positiveCovid.push(covidInfor);
+  }
 
   req.staff
     .save()
     .then((updatedStaff) => {
-      const covidInfors = updatedStaff.postiveCodvid;
-
+      const covidInfors = updatedStaff.positiveCovid;
       res.render("covid/covidPositiveInfor", {
         pageTitle: "Positive Covid Infor",
         path: "/covid",
@@ -379,6 +415,14 @@ exports.postCovid19PositiveInfor = (req, res, next) => {
       });
     })
     .catch((error) => console.log(error));
+};
+
+exports.getCovid19PositiveInfor = (req, res, next) => {
+  res.render("covid/covidPositiveInfor", {
+    pageTitle: "Positive Covid Infor",
+    path: "/covid",
+    covidInfors: req.staff.positiveCovid,
+  });
 };
 
 // logic for not match url

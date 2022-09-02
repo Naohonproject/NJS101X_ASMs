@@ -100,7 +100,7 @@ const staffSchema = new Schema({
     },
   ],
 
-  postiveCodvid: [
+  positiveCovid: [
     {
       positiveDate: {
         type: Schema.Types.Date,

@@ -16,7 +16,7 @@
             <div class="col-12 col-md-6 col-lg-4 mb-2">
                 <div class="status">
                     <h3>
-                        Body temperature
+                        Body Temperature Registration
                     </h3>
                 </div>
                 <form class="product-form" action="/covid/tempInfor" method="POST">
@@ -28,7 +28,11 @@
                         <label for="temp">Temp:</label>
                         <input type="text" name="temp" id="temp"/>
                     </div>
-                    <button type="submit" class="btn btn-info">Submit</button>
+                    <div class="btn-gr">
+                        <button type="submit" class="btn btn-info">Register</button>
+                        <button type="button" class="btn btn-info"><a style="text-decoration:none ; color : black;" href="/covid/tempInfor">Query Registed Infors</a></button>
+                    </div>
+
                 </form> 
              </div>
 
@@ -59,8 +63,10 @@
                         <label for="injectionDate">Injection date</label>
                         <input  type="date" name="injectionDate" id="injectionDate">
                     </div>
-
-                    <button type="submit" class="btn btn-info">Submit</button>
+                    <div class="btn-gr">
+                        <button type="submit" class="btn btn-info">Register</button>
+                        <button type="button" class="btn btn-info"><a style="text-decoration:none ; color : black;" href="/covid/injection">Query Registed Infors</a></button>
+                    </div>
                 </form> 
              </div>
 
@@ -77,9 +83,12 @@
                     </div>
                     <div class="form-control">
                         <label for="numberOfVacination">Injections Times</label>
-                        <input  type="text" name="numberOfVacination" id="numberOfVacination">
-                    </div> 
-                    <button type="submit" class="btn btn-info">submit</button>
+                        <input  type="text" name="numberOfVaccination" id="numberOfVacination">
+                    </div>
+                    <div class="btn-gr">
+                        <button type="submit" class="btn btn-info">submit</button>
+                        <button type="button" class="btn btn-info"><a style="text-decoration:none ; color : black;" href="/covid/covid19-positive"> Covid declaration Query </a></button>
+                    </div>
                 </form> 
              </div>
         </div>

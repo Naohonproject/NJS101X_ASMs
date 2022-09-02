@@ -1,6 +1,7 @@
 // import the sub funcions firm utils folder
 const { isToday, getUnique, getWorkSessionInfor } = require("../utils/subFunc");
 const Staff = require("../model/staffModel");
+const fileHelp = require("../utils/file");
 // controller render home page
 exports.getIndex = (req, res, next) => {
   res.render("index", {
@@ -173,8 +174,17 @@ exports.getStaffProfile = (req, res, next) => {
 
 // controller to post the updated information of staff, then redirect to the profile page to see the updated infor
 exports.postUpdatedProfile = (req, res, next) => {
-  const updatedImageUrl = req.body.imgUrl;
-  req.staff.imageUrl = updatedImageUrl;
+  const image = req.file;
+
+  console.log(req);
+
+  if (image) {
+    // delete old file that stored in server
+    fileHelp.deleteFile(req.staff.imageUrl);
+    // update a new url of updating file
+    req.staff.imageUrl = image.path;
+  }
+
   req.staff
     .save()
     .then(() => {

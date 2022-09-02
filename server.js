@@ -7,6 +7,7 @@ const MongoDbStore = require("connect-mongodb-session")(session);
 const csrf = require("csurf");
 const flash = require("connect-flash");
 const bscrypt = require("bcryptjs");
+const multer = require("multer");
 
 // import routers, use routes as middleware by server.use
 const checkRouter = require("./routers/rollCall");
@@ -29,6 +30,28 @@ const server = express();
 const store = new MongoDbStore({ uri: MONGODB_URI, collection: "sessions" });
 const csrfProtection = csrf();
 
+const dateStr = new Date().toISOString().replace(/:/g, "-");
+
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "images");
+  },
+  filename: (req, file, cb) => {
+    cb(null, dateStr + "-" + file.originalname);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  }
+  cb(null, false);
+};
+
 // declare and init port
 const port = 3000;
 
@@ -36,11 +59,17 @@ const port = 3000;
 server.set("view engine", "ejs");
 server.set("views", "views");
 
-// using middileware to parse request body to js object
+// using middleware to parse request body to js object
 server.use(bodyParser.urlencoded({ extended: false }));
+// store file in storage that is in server folder
+server.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
+);
 
-// difined the public folder,to be able to access css and other static file
+// defined the public folder,to be able to access css and other static file
 server.use(express.static(path.join(__dirname, "public")));
+// server the public image
+server.use("/images", express.static(path.join(__dirname, "images")));
 
 server.use(
   session({

@@ -21,6 +21,7 @@
             <img class="staff-infor__iamge" src="<%= imgUrl %>" alt="avatar">
         </div>
         <form class="form-profile" action="/update-profile" method="POST">
+            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
             <div class="form-control">
                 <label for="id">Id :</label>
                 <input readonly type="text" id="id" value="<%= id %>">

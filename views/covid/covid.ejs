@@ -20,6 +20,7 @@
                     </h3>
                 </div>
                 <form class="product-form" action="/covid/tempInfor" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <div class="form-control">
                         <label for="registerTime">Date</label>
                         <input type="datetime-local" id="registerTime" name="registerTime">
@@ -43,6 +44,7 @@
                     </h3>
                 </div>
                 <form class="product-form" action="/covid/injection" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <div class="form-control">
                         <label for="injectionTime">Time:</label>
                         <select class="custom-select custom-select-lg mb-3" name="injectionTime" id="injectionTime">
@@ -77,6 +79,7 @@
                     </h3>
                 </div>
                 <form class="product-form" action="/covid/covid19-positive" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <div class="form-control">
                         <label for="positiveDate">positive Date</label>
                         <input  type="date" name="positiveDate" id="positiveDate">

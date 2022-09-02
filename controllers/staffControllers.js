@@ -12,7 +12,7 @@ exports.getIndex = (req, res, next) => {
 // controller to render rollcall page
 exports.getStaffRollCallForm = (req, res, next) => {
   let status = "off";
-  if (req.staff.workSesstions.length === 0) {
+  if (req.staff.workSessions.length === 0) {
     res.render("rollCall", {
       pageTitle: "rollCall",
       path: "/rollcall",
@@ -24,15 +24,15 @@ exports.getStaffRollCallForm = (req, res, next) => {
       annualLeave: req.staff.annualLeave,
     });
   } else {
-    const lastWorkSesstionIndex = req.staff.workSesstions.length - 1;
-    const lastWorkSesstion = req.staff.workSesstions[lastWorkSesstionIndex];
+    const lastWorkSessionIndex = req.staff.workSessions.length - 1;
+    const lastWorkSession = req.staff.workSessions[lastWorkSessionIndex];
 
-    status = lastWorkSesstion.checkOut ? "off" : "on";
+    status = lastWorkSession.checkOut ? "off" : "on";
 
-    const checkInTime = new Date(lastWorkSesstion.checkIn);
+    const checkInTime = new Date(lastWorkSession.checkIn);
     const localCheckInTime = checkInTime.toLocaleTimeString();
 
-    const checkOutTime = new Date(lastWorkSesstion.checkOut);
+    const checkOutTime = new Date(lastWorkSession.checkOut);
     const localCheckOutTime = checkOutTime.toLocaleTimeString();
 
     res.render("rollCall", {
@@ -41,7 +41,7 @@ exports.getStaffRollCallForm = (req, res, next) => {
       staffName: req.staff.name,
       status: status,
       checkIn: localCheckInTime,
-      workPos: lastWorkSesstion.workPos,
+      workPos: lastWorkSession.workPos,
       checkOut: localCheckOutTime,
       annualLeave: req.staff.annualLeave,
     });
@@ -52,12 +52,12 @@ exports.getStaffRollCallForm = (req, res, next) => {
 exports.postStaffCheckIn = (req, res, next) => {
   const workPostion = req.body.workPosition;
   const checkIn = Date.now();
-  const workSesstion = {
+  const workSession = {
     checkIn: checkIn,
     workPos: workPostion,
   };
 
-  req.staff.workSesstions.push(workSesstion);
+  req.staff.workSessions.push(workSession);
 
   req.staff
     .save()
@@ -69,8 +69,8 @@ exports.postStaffCheckIn = (req, res, next) => {
 
 // post staff checkout then render the infor of all rollcalls of this day(realtime)
 exports.postStaffCheckout = (req, res, next) => {
-  const lastWorkSesstionIndex = req.staff.workSesstions.length - 1;
-  req.staff.workSesstions[lastWorkSesstionIndex].checkOut = Date.now();
+  const lastWorkSessionIndex = req.staff.workSessions.length - 1;
+  req.staff.workSessions[lastWorkSessionIndex].checkOut = Date.now();
 
   req.staff
     .save()
@@ -84,33 +84,33 @@ exports.postStaffCheckout = (req, res, next) => {
 
 // get all the rollcall of today, then render it to views
 exports.getStaffRollCallInfor = (req, res, next) => {
-  const workSestions = req.staff.workSesstions;
-  // filter from all worksession ,by using isToday function to filting the worksesstions
-  const workSesstionToday = workSestions.filter((workSession) =>
+  const workSessions = req.staff.workSessions;
+  // filter from all worksession ,by using isToday function to filting the worksessions
+  const workSessionToday = workSessions.filter((workSession) =>
     isToday(workSession.checkIn)
   );
 
-  const workTimeOfSesstion = workSesstionToday.map((workSesstion) => {
+  const workTimeOfSession = workSessionToday.map((workSession) => {
     const duration = Number(
-      ((workSesstion.checkOut - workSesstion.checkIn) / 3600000).toFixed(2)
+      ((workSession.checkOut - workSession.checkIn) / 3600000).toFixed(2)
     );
     return duration;
   });
 
-  const totalWorkTime = workTimeOfSesstion.reduce((prev, curr) => {
+  const totalWorkTime = workTimeOfSession.reduce((prev, curr) => {
     return prev + curr;
   }, 0);
 
-  const lastWorkSesstionIndex = req.staff.workSesstions.length - 1;
-  const lastWorkSesstion = req.staff.workSesstions[lastWorkSesstionIndex];
+  const lastWorkSessionIndex = req.staff.workSessions.length - 1;
+  const lastWorkSession = req.staff.workSessions[lastWorkSessionIndex];
 
-  const status = lastWorkSesstion.checkOut ? "off" : "on";
+  const status = lastWorkSession.checkOut ? "off" : "on";
 
-  res.render("workSesstion", {
+  res.render("workSession", {
     staffName: req.staff.name,
     status: status,
     totalWorkTime: totalWorkTime,
-    rollCalls: workSesstionToday.map((rc) => {
+    rollCalls: workSessionToday.map((rc) => {
       const checkIn = new Date(rc.checkIn);
       const checkOut = new Date(rc.checkOut);
       return {
@@ -119,7 +119,7 @@ exports.getStaffRollCallInfor = (req, res, next) => {
         position: rc.workPos,
       };
     }),
-    pageTitle: "All Work Sesstion",
+    pageTitle: "All Work Session",
     path: "/rollcall",
     annualLeave: req.staff.annualLeave,
   });
@@ -142,7 +142,7 @@ exports.postAnnualLeaveForm = (req, res, next) => {
     };
   });
 
-  req.staff.req.staff.annualLeave =
+  req.staff.annualLeave =
     req.staff.annualLeave - (leaveDuration * numberOfLeaveDate) / 8;
 
   req.staff.annualLeaveRegisters.push(...leaveDateDetail);
@@ -185,8 +185,8 @@ exports.postUpdatedProfile = (req, res, next) => {
 
 // controller to get the infor mation of each worksestion
 exports.getWorkInformation = (req, res, next) => {
-  const months = req.staff.workSesstions.map((workSesstion) => {
-    return workSesstion.checkIn.getMonth() + 1;
+  const months = req.staff.workSessions.map((workSession) => {
+    return workSession.checkIn.getMonth() + 1;
   });
 
   // get the months of staff working time
@@ -194,11 +194,11 @@ exports.getWorkInformation = (req, res, next) => {
 
   // get workin infor
   const workInfors = getWorkSessionInfor(
-    req.staff.workSesstions,
+    req.staff.workSessions,
     req.staff.annualLeaveRegisters
   );
 
-  // render the working time page with months, and working infor of each worksesstion
+  // render the working time page with months, and working infor of each worksession
   res.render("workInfor", {
     pageTitle: "Work Infor",
     path: "/workinfor",
@@ -210,26 +210,26 @@ exports.getWorkInformation = (req, res, next) => {
 // const post the salary query by dedicated month , by the form in working time page
 exports.postQuerySalaryMonth = (req, res, next) => {
   const chooseMonth = Number(req.body.chooseMonth);
-  const chooseWorkSesstion = req.staff.workSesstions.filter((workSesstion) => {
-    return workSesstion.checkIn.getMonth() + 1 === chooseMonth;
+  const chooseWorkSession = req.staff.workSessions.filter((workSession) => {
+    return workSession.checkIn.getMonth() + 1 === chooseMonth;
   });
 
-  // reuse getWorkSesstionInfor function , but not on all worksesstions, using it on the worksession of the pointed month
+  // reuse getWorkSessionInfor function , but not on all worksessions, using it on the worksession of the pointed month
   const workInfors = getWorkSessionInfor(
-    chooseWorkSesstion,
+    chooseWorkSession,
     req.staff.annualLeaveRegisters
   );
 
-  const lastWorkSesstionOfDay = [];
+  const lastWorkSessionOfDay = [];
 
   workInfors.forEach((workInfor) => {
     if (workInfor.workTimeAndaAnnualLeave !== null) {
       if (!isNaN(workInfor.workTimeAndaAnnualLeave))
-        lastWorkSesstionOfDay.push(workInfor);
+        lastWorkSessionOfDay.push(workInfor);
     }
   });
 
-  const workTimeOfDay = lastWorkSesstionOfDay.map((infor) => {
+  const workTimeOfDay = lastWorkSessionOfDay.map((infor) => {
     return infor.workTimeAndaAnnualLeave;
   });
 

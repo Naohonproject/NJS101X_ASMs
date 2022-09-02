@@ -2,6 +2,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const MongoDbStore = require("connect-mongodb-session")(session);
+const csrf = require("csurf");
+const flash = require("connect-flash");
+const bscrypt = require("bcryptjs");
 
 // import routers, use routes as middleware by server.use
 const checkRouter = require("./routers/rollCall");
@@ -10,13 +15,19 @@ const covidRouter = require("./routers/covid");
 const annualLeaveRouter = require("./routers/leave");
 const workInforRouter = require("./routers/workinfor");
 const salaryQueryRouter = require("./routers/salaryQuery");
+const AuthRouter = require("./routers/auth");
 
 const staffController = require("./controllers/staffControllers");
 // import model
 const Staff = require("./model/staffModel");
 
+const MONGODB_URI =
+  "mongodb+srv://letuanbao:SByQsXUanGc1VnuZ@cluster0.4ewgxhk.mongodb.net/Company";
+
 // create a server with express top level funtion
 const server = express();
+const store = new MongoDbStore({ uri: MONGODB_URI, collection: "sessions" });
+const csrfProtection = csrf();
 
 // declare and init port
 const port = 3000;
@@ -31,16 +42,35 @@ server.use(bodyParser.urlencoded({ extended: false }));
 // difined the public folder,to be able to access css and other static file
 server.use(express.static(path.join(__dirname, "public")));
 
-// assume that there is a user,who signed in successfully then add database of that user to incoming request
+server.use(
+  session({
+    secret: "my secret",
+    resave: false,
+    saveUninitialized: false,
+    store: store,
+  })
+);
+
+server.use(csrfProtection);
+
+server.use(flash());
+
 server.use((req, res, next) => {
-  Staff.findById("6303ec75723bbc2170c45d47")
+  if (!req.session.staff) {
+    return next();
+  }
+  Staff.findById(req.session.staff._id)
     .then((staff) => {
       req.staff = staff;
       next();
     })
-    .catch((error) => {
-      console.log(error);
-    });
+    .catch((err) => console.log(err));
+});
+
+server.use((req, res, next) => {
+  res.locals.isAuthenticated = req.session.isLoggedIn;
+  res.locals.csrfToken = req.csrfToken();
+  next();
 });
 
 // use routers
@@ -50,37 +80,38 @@ server.use(covidRouter);
 server.use(workInforRouter);
 server.use(annualLeaveRouter);
 server.use(salaryQueryRouter);
+server.use(AuthRouter);
 server.get("/", staffController.getIndex);
 server.use(staffController.getErrorPage);
 
 // connect to the db on mongodb by using mongoose and connection string, then create a user if there is no user at all,if it has a user, no create more
 mongoose
-  .connect(
-    "mongodb+srv://letuanbao:SByQsXUanGc1VnuZ@cluster0.4ewgxhk.mongodb.net/Company?retryWrites=true&w=majority"
-  )
+  .connect(MONGODB_URI)
   .then(() => {
     Staff.findOne().then((staff) => {
       if (!staff) {
-        const user = new Staff({
-          name: "le tuan bao",
-          email: "Letuanbao27121996@gmail.com",
-          role: "staff",
-          doB: new Date("1996-12-27"),
-          salaryScale: 4.0,
-          startDate: new Date("2019-12-01"),
-          department: "Piping",
-          annualLeave: 12,
-          imageUrl: "https://unsplash.com/s/photos/personal-assistant",
-          workSesstions: [],
-          annualLeaveRegisters: [],
-          tempInfor: [],
-          vaccinationInfor: [],
-          postiveCodvid: [],
+        const pass = "123456";
+        return bscrypt.hash(pass, 12).then((encryptedPassword) => {
+          const staff = new Staff({
+            name: "le tuan bao",
+            email: "Letuanbao27121996@gmail.com",
+            password: encryptedPassword,
+            role: "staff",
+            doB: new Date("1996-12-27"),
+            salaryScale: 4.0,
+            startDate: new Date("2019-12-01"),
+            department: "Piping",
+            annualLeave: 12,
+            imageUrl: "https://unsplash.com/s/photos/personal-assistant",
+            workSessions: [],
+            annualLeaveRegisters: [],
+            tempInfor: [],
+            vaccinationInfor: [],
+            positiveCovid: [],
+          });
+          return staff.save();
         });
-        staff.save();
       }
-
-      // after connect to mongodb successfully, let server listen the incoming request on port(that's 3000)
       server.listen(port);
     });
   })

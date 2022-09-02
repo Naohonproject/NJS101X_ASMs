@@ -1,35 +1,35 @@
-// function to get duration of eachtime when staff checkin and check out, detect the last worksesstion of a day, then calc the total worktiem of day,overtime,...
-const getWorkSessionInfor = (workSesstions, annualLeaveRegisters) => {
-  // take workSesstion form arg then mapping to take out put
-  const workInfors = workSesstions.map((workSesstion, index) => {
-    // set flags, if worksesstion is the lastsesstion of the day, these flage will change then let us detect overtime,work time of day
-    let isLastWorkSesstionOfDay = false;
+// function to get duration of eachtime when staff checkin and check out, detect the last worksession of a day, then calc the total worktiem of day,overtime,...
+const getWorkSessionInfor = (workSessions, annualLeaveRegisters) => {
+  // take workSession form arg then mapping to take out put
+  const workInfors = workSessions.map((workSession, index) => {
+    // set flags, if worksession is the lastsession of the day, these flage will change then let us detect overtime,work time of day
+    let isLastWorkSessionOfDay = false;
     let totalTimeWorking = null;
     let overTime = null;
 
-    // if the worksesstion that at the end of arrays(worksesstions array), that absolutely the last worksesstion of some day
-    if (index === workSesstions.length - 1) {
-      isLastWorkSesstionOfDay = true;
+    // if the worksession that at the end of arrays(worksessions array), that absolutely the last worksession of some day
+    if (index === workSessions.length - 1) {
+      isLastWorkSessionOfDay = true;
     } else {
       if (
-        // if worksestion that in the middile of array , that is the last worksesstion of day if this checkin day does not match check in day of next worksesstion
-        workSesstion.checkIn.toDateString() !==
-        workSesstions[index + 1].checkIn.toDateString()
+        // if worksestion that in the middile of array , that is the last worksession of day if this checkin day does not match check in day of next worksession
+        workSession.checkIn.toDateString() !==
+        workSessions[index + 1].checkIn.toDateString()
       ) {
-        isLastWorkSesstionOfDay = true;
+        isLastWorkSessionOfDay = true;
       }
     }
 
-    // if this worksesstion is the last worksesstion of day,take all worksesstion which has the same checkin day from total workSesstions
-    if (isLastWorkSesstionOfDay) {
-      const workDurationOfThisDay = workSesstions
-        .filter((sesstion) => {
+    // if this worksession is the last worksession of day,take all worksession which has the same checkin day from total workSessions
+    if (isLastWorkSessionOfDay) {
+      const workDurationOfThisDay = workSessions
+        .filter((session) => {
           return (
-            sesstion.checkIn.toDateString() ===
-            workSesstion.checkIn.toDateString()
+            session.checkIn.toDateString() ===
+            workSession.checkIn.toDateString()
           );
         })
-        // mapping through returned array(return by filter method) get the duration of each workSession,then return an array of durration of each workSesstion
+        // mapping through returned array(return by filter method) get the duration of each workSession,then return an array of durration of each workSession
         .map((register) => {
           return Number(
             ((register.checkOut - register.checkIn) / 3600000).toFixed(2)
@@ -45,13 +45,13 @@ const getWorkSessionInfor = (workSesstions, annualLeaveRegisters) => {
     const annualLeavesDuration = annualLeaveRegisters
       .filter((register) => {
         return (
-          register.dayOff.toDateString() === workSesstion.checkIn.toDateString()
+          register.dayOff.toDateString() === workSession.checkIn.toDateString()
         );
       })
       .map((register) => {
         return Number(register.duration);
       });
-    // set initial value for annual time, if there is no annual leave was registed, the annual Time of this day will be equal to 0
+    // set initial value for annual time, if there is no annual leave was registered, the annual Time of this day will be equal to 0
     let annualTimeOfDay = 0;
 
     // if the annual duration array not empty, let calc the total annual time of this day, because, some time people registing more than 1 annual leave
@@ -62,15 +62,15 @@ const getWorkSessionInfor = (workSesstions, annualLeaveRegisters) => {
     }
 
     // some time , staff checkin but not check out yet, if not checkout ,set work duration of this worksession to null
-    const workSesstionDuration = workSesstion.checkOut
+    const workSessionDuration = workSession.checkOut
       ? Number(
-          ((workSesstion.checkOut - workSesstion.checkIn) / 3600000).toFixed(2)
+          ((workSession.checkOut - workSession.checkIn) / 3600000).toFixed(2)
         )
       : null;
 
     // set flag
     let workTimeAndaAnnualLeave = null;
-    // if totalworking is not null, means that just the last work sesstion of the day will have the workTimeAndAnnualLeave value, otherwise, it's still null
+    // if totalworking is not null, means that just the last work session of the day will have the workTimeAndAnnualLeave value, otherwise, it's still null
     if (totalTimeWorking !== null) {
       workTimeAndaAnnualLeave = Number(
         (annualTimeOfDay + totalTimeWorking).toFixed(3)
@@ -82,18 +82,18 @@ const getWorkSessionInfor = (workSesstions, annualLeaveRegisters) => {
       overTime = Number((workTimeAndaAnnualLeave - 8).toFixed(3));
     }
 
-    // return the mapped object that reflect to the worksesstions
+    // return the mapped object that reflect to the worksessions
     return {
-      date: workSesstion.checkIn.toLocaleDateString(),
-      checkIn: workSesstion.checkIn.toLocaleTimeString(),
-      checkOut: workSesstion.checkOut
-        ? workSesstion.checkOut.toLocaleTimeString()
+      date: workSession.checkIn.toLocaleDateString(),
+      checkIn: workSession.checkIn.toLocaleTimeString(),
+      checkOut: workSession.checkOut
+        ? workSession.checkOut.toLocaleTimeString()
         : null,
-      duration: workSesstionDuration,
+      duration: workSessionDuration,
       registedAnnualTime: annualTimeOfDay,
       workTimeAndaAnnualLeave: workTimeAndaAnnualLeave,
       overTime: overTime,
-      workPlace: workSesstion.workPos,
+      workPlace: workSession.workPos,
     };
   });
   // return workInfor

@@ -1,15 +1,16 @@
 const express = require("express");
 const staffController = require("../controllers/staffControllers");
+const { isAuth } = require("../middleware/auth");
 
 const router = express.Router();
 
 // router of the roll call page
-router.get("/", staffController.getStaffRollCallForm);
+router.get("/", isAuth, staffController.getStaffRollCallForm);
 
-router.post("/checkin", staffController.postStaffCheckIn);
+router.post("/checkin", isAuth, staffController.postStaffCheckIn);
 
-router.post("/checkout", staffController.postStaffCheckout);
+router.post("/checkout", isAuth, staffController.postStaffCheckout);
 
-router.get("/infor", staffController.getStaffRollCallInfor);
+router.get("/infor", isAuth, staffController.getStaffRollCallInfor);
 
 module.exports = router;

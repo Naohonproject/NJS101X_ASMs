@@ -10,7 +10,11 @@ const staffSchema = new Schema({
   },
   email: {
     type: String,
-    requierd: true,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
   },
   role: {
     type: String,
@@ -30,7 +34,7 @@ const staffSchema = new Schema({
   },
   department: {
     type: String,
-    requird: true,
+    required: true,
   },
   annualLeave: {
     type: Schema.Types.Decimal128,
@@ -40,7 +44,7 @@ const staffSchema = new Schema({
     type: String,
     required: true,
   },
-  workSesstions: [
+  workSessions: [
     {
       checkIn: {
         type: Schema.Types.Date,

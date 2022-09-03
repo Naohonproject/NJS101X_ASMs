@@ -11,8 +11,12 @@
 <body>
     <%- include('../includes/navigation.ejs') %>
 
-    <main> 
-        <div class="row g-1">
+    <main>
+        <% if (errorMessage) { %>
+            <div class="user-message user-message--error"><%= errorMessage %></div>
+        <% } %>
+        <% if(staff.role === "staff")  { %>
+        <div class="row g-1">       
             <div class="col-12 col-md-6 col-lg-4 mb-2">
                 <div class="status">
                     <h3>
@@ -89,12 +93,87 @@
                         <input  type="text" name="numberOfVaccination" id="numberOfVacination">
                     </div>
                     <div class="btn-gr">
-                        <button type="submit" class="btn btn-info">submit</button>
+                        <button type="submit" class="btn btn-info">Register</button>
                         <button type="button" class="btn btn-info"><a style="text-decoration:none ; color : black;" href="/covid/covid19-positive"> Covid declaration Query </a></button>
                     </div>
                 </form> 
              </div>
+            
         </div>
-             
+        <% } %>
+
+        <% if(staff.role === "manager") { %>
+             <div class="row g-1">       
+            <div class="col-12 col-md-6 col-lg-4 mb-2">
+                <div class="status">
+                    <h3>
+                        Staff Temperature Information
+                    </h3>
+                </div>
+                <form class="product-form" action="/covid/query/temp-infor" method="POST">
+                    <div class="form-control mb-1 align-items-center justify-content-around">
+                        <label for="positiveDate">Staff name : </label>
+                        <select name = "staffId" class="form-select" aria-label=".form-select-lg example">
+                            <% staffs.forEach((staff,index) => {  %>
+                            <option  value="<%=staff._id%>"><%=staff.name%></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />                 
+                    <div class="btn-gr">
+                        <button type="submit" class="btn btn-info">Query</button>
+                        <!-- <button type="button" class="btn btn-info"><a style="text-decoration:none ; color : black;" href="/covid/tempInfor">PDF</a></button> -->
+                    </div>
+
+                </form> 
+             </div>
+
+             <div class="col-12 col-md-6 col-lg-4 mb-2">
+                <div class="status">
+                    <h3>
+                        Staff Vaccination information
+                    </h3>
+                </div>
+                <form class="product-form" action="/covid/query/injection-infor" method="POST">                   
+                     <div class="form-control mb-1 align-items-center justify-content-around">
+                        <label for="positiveDate">Staff name : </label>
+                        <select name = "staffId" class="form-select" aria-label=".form-select-lg example">
+                            <% staffs.forEach((staff,index) => {  %>
+                            <option  value="<%=staff._id%>"><%=staff.name%></option>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <div class="btn-gr">
+                        <button type="submit" class="btn btn-info">Query</button>
+                        <!-- <button type="button" class="btn btn-info"><a style="text-decoration:none ; color : black;" href="/covid/injection">Query Registed Infors</a></button> -->
+                    </div>
+                </form> 
+             </div>
+
+             <div class="col-12 col-md-6 col-lg-4 mb-2">
+                <div class="status">
+                    <h3>
+                        Staff Positive Information
+                    </h3>
+                </div>
+                <form class="product-form" action="/covid/covid19-positive" method="POST">
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                    <div class="form-control">
+                        <label for="positiveDate">positive Date</label>
+                        <input  type="date" name="positiveDate" id="positiveDate">
+                    </div>
+                    <div class="form-control">
+                        <label for="numberOfVacination">Injections Times</label>
+                        <input  type="text" name="numberOfVaccination" id="numberOfVacination">
+                    </div>
+                    <div class="btn-gr">
+                        <button type="submit" class="btn btn-info">Register</button>
+                        <button type="button" class="btn btn-info"><a style="text-decoration:none ; color : black;" href="/covid/covid19-positive"> Covid declaration Query </a></button>
+                    </div>
+                </form> 
+             </div>          
+        </div>
+        <% } %>
     </main>
 <%- include('../includes/end.ejs') %>

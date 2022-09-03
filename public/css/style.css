@@ -63,10 +63,10 @@ td {
 .status .checkin {
   background-color: #abdbe3;
   width: 200px;
-  height: 120px;
+  height: 140px;
   border-radius: 4px;
   padding: 12px;
-  margin: auto;
+  margin: 0 auto;
 }
 
 .rollcall-table {

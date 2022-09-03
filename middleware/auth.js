@@ -4,3 +4,10 @@ exports.isAuth = (req, res, next) => {
   }
   next();
 };
+
+exports.isStaff = (req, res, next) => {
+  if (!req.session.staff.role === "staff") {
+    return res.redirect("/");
+  }
+  next();
+};

@@ -7,28 +7,37 @@
         <a class="<%= path === '/' ? 'active' : '' %>" href="/">Home</a>
       </li>
       <% if(isAuthenticated) { %>
-      <li class="main-header__item">
-        <a class="<%= path === '/rollcall' ? 'active' : '' %>" href="/rollcall"
-          >RollCall</a
-        >
-      </li>
-      <li class="main-header__item">
-        <a class="<%= path === '/profile' ? 'active' : '' %>" href="/profile"
-          >Profile</a
-        >
-      </li>
-      <li class="main-header__item">
-        <a
-          class="<%= path === '/workinfor' ? 'active' : '' %>"
-          href="/workinfor"
-          >Working Time</a
-        >
-      </li>
-      <li class="main-header__item">
-        <a class="<%= path === '/covid' ? 'active' : '' %>" href="/covid"
-          >Covid19</a
-        >
-      </li>
+        <% if(staff.role === "staff") { %>
+          <li class="main-header__item">
+            <a class="<%= path === '/rollcall' ? 'active' : '' %>" href="/rollcall"
+              >RollCall</a
+            >
+          </li>
+          <li class="main-header__item">
+            <a class="<%= path === '/profile' ? 'active' : '' %>" href="/profile"
+              >Profile</a
+            >
+          </li>
+          <li class="main-header__item">
+            <a
+              class="<%= path === '/workinfor' ? 'active' : '' %>"
+              href="/workinfor"
+              >Working Time</a
+            >
+          </li>
+        <% } %>
+        <li class="main-header__item">
+          <a class="<%= path === '/covid' ? 'active' : '' %>" href="/covid"
+            >Covid19</a
+          >
+        </li>
+        <% if(staff.role === "manager") { %>
+          <li class="main-header__item">
+          <a class="<%= path === '/confirm' ? 'active' : '' %>" href="/covid"
+            >Confirm</a
+          >
+        </li>
+         <% } %>
        <% } %>
     </ul>
 

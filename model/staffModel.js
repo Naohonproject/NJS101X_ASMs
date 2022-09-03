@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-// definde staffModle
+// defined staff Modlel
 const staffSchema = new Schema({
   name: {
     type: String,
@@ -18,42 +18,35 @@ const staffSchema = new Schema({
   },
   role: {
     type: String,
-    requierd: true,
+    required: true,
   },
+  managerID: Schema.Types.ObjectId,
   doB: {
     type: Schema.Types.Date,
-    required: true,
   },
   salaryScale: {
     type: Schema.Types.Number,
-    required: true,
   },
   startDate: {
     type: Schema.Types.Date,
-    required: true,
   },
   department: {
     type: String,
-    required: true,
   },
   annualLeave: {
     type: Schema.Types.Decimal128,
-    required: true,
   },
   imageUrl: {
     type: String,
-    required: true,
   },
   workSessions: [
     {
       checkIn: {
         type: Schema.Types.Date,
-        required: true,
       },
       checkOut: Schema.Types.Date,
       workPos: {
         type: String,
-        required: true,
       },
     },
   ],
@@ -61,15 +54,12 @@ const staffSchema = new Schema({
     {
       dayOff: {
         type: Schema.Types.Date,
-        required: true,
       },
       reason: {
         type: String,
-        required: true,
       },
       duration: {
         type: Schema.Types.Decimal128,
-        required: true,
       },
     },
   ],

@@ -13,7 +13,9 @@
         <div class="container">
             <div class="row">
                 <div class="col-12 work-infor">   
-                    <h2 style="text-align: center;">Vaccinated information</h2>
+                    <h2 style="text-align: center;">Staff Vaccination information</h2>
+                    <h5 style="text-align: center;">Staff Name :  <%= staffName %></h5>
+                    <% if(injectionInfors.length > 0) { %>
                     <table class="table table-striped rollcall-table">
                         <thead>
                             <tr>
@@ -31,7 +33,10 @@
                             </tr>
                             <% }); %> 
                         </tbody>
-                    </table>  
+                    </table> 
+                    <% } else { %>
+                        <h1 style="text-align: center;margin-top : 7rem;color: red;">This staff have not registered any vaccination information</h1>
+                    <% } %>
                 </div>
             </div>
         </div>

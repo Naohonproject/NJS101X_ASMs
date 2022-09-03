@@ -37,7 +37,7 @@ const fileStorage = multer.diskStorage({
     cb(null, "images");
   },
   filename: (req, file, cb) => {
-    cb(null, dateStr + "-" + file.originalname);
+    cb(null, req.session.staff._id + "-" + file.originalname);
   },
 });
 
@@ -62,9 +62,6 @@ server.set("views", "views");
 // using middleware to parse request body to js object
 server.use(bodyParser.urlencoded({ extended: false }));
 // store file in storage that is in server folder
-server.use(
-  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
-);
 
 // defined the public folder,to be able to access css and other static file
 server.use(express.static(path.join(__dirname, "public")));
@@ -78,6 +75,9 @@ server.use(
     saveUninitialized: false,
     store: store,
   })
+);
+server.use(
+  multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
 
 server.use(csrfProtection);
@@ -99,6 +99,7 @@ server.use((req, res, next) => {
 server.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
+  res.locals.staff = req.session.staff;
   next();
 });
 
@@ -117,31 +118,53 @@ server.use(staffController.getErrorPage);
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    Staff.findOne().then((staff) => {
-      if (!staff) {
-        const pass = "123456";
-        return bscrypt.hash(pass, 12).then((encryptedPassword) => {
-          const staff = new Staff({
-            name: "le tuan bao",
-            email: "Letuanbao27121996@gmail.com",
-            password: encryptedPassword,
-            role: "staff",
-            doB: new Date("1996-12-27"),
-            salaryScale: 4.0,
-            startDate: new Date("2019-12-01"),
-            department: "Piping",
-            annualLeave: 12,
-            imageUrl: "https://unsplash.com/s/photos/personal-assistant",
-            workSessions: [],
-            annualLeaveRegisters: [],
-            tempInfor: [],
-            vaccinationInfor: [],
-            positiveCovid: [],
+    Staff.findOne()
+      .then((staff) => {
+        if (!staff) {
+          const pass = "123456";
+          return bscrypt.hash(pass, 12).then((encryptedPassword) => {
+            const staff = new Staff({
+              name: "le tuan bao",
+              email: "Letuanbao27121996@gmail.com",
+              password: encryptedPassword,
+              role: "staff",
+              doB: new Date("1996-12-27"),
+              salaryScale: 4.0,
+              startDate: new Date("2019-12-01"),
+              department: "Piping",
+              annualLeave: 12,
+              imageUrl: "images/2022-09-03T03-19-48.480Z-1112.jpg",
+              workSessions: [],
+              annualLeaveRegisters: [],
+              tempInfor: [],
+              vaccinationInfor: [],
+              positiveCovid: [],
+            });
+            return staff.save();
           });
-          return staff.save();
+        }
+      })
+      .then(() => {
+        Staff.findOne({ role: "manager" }).then((staff) => {
+          const pass = "111111";
+          if (!staff) {
+            return bscrypt.hash(pass, 12).then((encryptedPassword) => {
+              const staff = new Staff({
+                name: "Le Quoc Dat",
+                email: "ltb.199x@outlook.com",
+                role: "manager",
+                password: encryptedPassword,
+                tempInfor: [],
+                vaccinationInfor: [],
+                positiveCovid: [],
+              });
+              return staff.save();
+            });
+          }
         });
-      }
-      server.listen(port);
-    });
+      })
+      .then(() => {
+        server.listen(port);
+      });
   })
   .catch((error) => console.log(error));

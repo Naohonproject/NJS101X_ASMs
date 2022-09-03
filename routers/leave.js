@@ -1,6 +1,8 @@
 const express = require("express");
+const { body } = require("express-validator");
+
 const staffController = require("../controllers/staffControllers");
-const { isAuth } = require("../middleware/auth");
+const { isAuth, isStaff } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -8,6 +10,18 @@ const router = express.Router();
 router.post(
   "/annual-leave-register",
   isAuth,
+  isStaff,
+  [
+    body("leaveDates")
+      .exists({ checkFalsy: true })
+      .withMessage("Date need to be choose"),
+    body("reasonDesc")
+      .exists({ checkFalsy: true })
+      .withMessage("Need to describe the reason"),
+    body("duration")
+      .exists({ checkFalsy: true })
+      .withMessage("Need to enter annual leave time"),
+  ],
   staffController.postAnnualLeaveForm
 );
 

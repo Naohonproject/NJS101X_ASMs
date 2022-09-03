@@ -3,6 +3,32 @@
     <link rel="stylesheet" href="/css/check.css">
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/modal.css">
+     
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/gh/dubrox/Multiple-Dates-Picker-for-jQuery-UI@master/jquery-ui.multidatespicker.js"></script>
+    
+    <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+   <style>
+        body {
+        font-family: Arial, Helvetica, sans-serif;
+        }
+    
+        input {
+        width: 300px;
+        padding: 7px;
+        }
+    
+        .ui-state-highlight {
+        border: 0 !important;
+        }
+    
+        .ui-state-highlight a {
+        background: #363636 !important;
+        color: #fff !important;
+    }
+  </style>
 </head>
 
 <body>
@@ -92,4 +118,9 @@
         </div>
         
     </main>
+     <script>
+        $(document).ready(function () {
+        $('#datePick').multiDatesPicker();
+        });
+  </script>
 <%- include('./includes/end.ejs') %>

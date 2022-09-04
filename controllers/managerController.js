@@ -75,3 +75,35 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
       console.log(error);
     });
 };
+
+exports.postDeleteWorkSession = (req, res, next) => {
+  const DeleteWorkSessionId = req.body.workSessionId;
+  const StaffId = req.body.employeeId;
+
+  Staff.findById(StaffId)
+    .then((staff) => {
+      const updatedWorkSessions = staff.workSessions.filter((workSession) => {
+        return workSession._id.toString() !== DeleteWorkSessionId;
+      });
+      staff.workSessions = updatedWorkSessions;
+      return staff.save();
+    })
+    .then((updatedStaff) => {
+      res.redirect("/manager/workingTimeQuery");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+exports.postConfirmWorkSessions = (req, res, next) => {
+  console.log(req.body.workSession.split(","));
+  // const workSessions = req.body.workSession;
+  // const checkOuts = workSessions.map((workSession) => {
+  //   return workSession.checkOut;
+  // });
+
+  console.log(req.body.employeeId);
+  console.log(req.body.chooseMonth);
+  res.redirect("/");
+};

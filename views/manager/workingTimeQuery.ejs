@@ -64,10 +64,11 @@
                                 <th scope="col">Work Place</th>
                                 <th scope="col">Check In Time </th>
                                 <th scope="col">Check Out Time </th>
-                                <th scope="col">Sesstion Duration</th>
+                                <th scope="col">Session Duration</th>
                                 <th scope="col">Total Work Time</th>
                                 <th scope="col">Over Time</th>
-                                <th scope="col">Annaul Leave</th>
+                                <th scope="col">Annual Leave</th>
+                                <th scope="col" >Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -94,7 +95,7 @@
                                     <% if(workInfor.workTimeAndaAnnualLeave !== null && !isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
                                         <%= workInfor.workTimeAndaAnnualLeave %>
                                     <% } else if (isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
-                                        Not Finshed
+                                        Not Finished
                                     <% } else { %> 
                                         -
                                     <% } %>
@@ -107,10 +108,30 @@
                                     <% } %>
                                 </td>
                                 <td scope="col"><%= workInfor.registedAnnualTime %></td>
+                                <% if(workInfor.checkOut) { %>
+                                    <td scope="col">
+                                        <form action="/manage/deleteWorkSession" method="post">
+                                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />                 
+                                            <input value="<%= workInfor.workSessionId %>" name="workSessionId" type="hidden">
+                                            <input value="<%= employee._id %>" name="employeeId" type="hidden">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </td>
+                                <% } else { %>
+                                    <td scope="col"><form action="#"><button disabled type="submit" class="btn btn-danger">Delete</button></form></td>
+                                <% } %>
                             </tr>
                             <% }); %> 
                         </tbody>
-                    </table>  
+                    </table>
+                     <form class="product-form" action="/manage/confirm-Work-Session" method="POST">
+                        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />                 
+                        <input type="hidden" name="employeeId" value="<%= employee._id %>" />                 
+                        <input type="hidden" name="chooseMonth" value="<%= chooseMonth %>" />                 
+                        <div class="btn-gr mt-3">
+                            <button type="submit" class="btn btn-warning">Confirm Work Sessions</button>
+                        </div>
+                </form> 
                 </div>
             <% } %>
     </main>

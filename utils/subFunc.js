@@ -94,6 +94,7 @@ const getWorkSessionInfor = (workSessions, annualLeaveRegisters) => {
       workTimeAndaAnnualLeave: workTimeAndaAnnualLeave,
       overTime: overTime,
       workPlace: workSession.workPos,
+      workSessionId: workSession._id,
     };
   });
   // return workInfor
@@ -112,7 +113,7 @@ function getUnique(array) {
   return uniqueArray;
 }
 
-// togic to check day is today or not
+// logic to check day is today or not
 const isToday = (date) => {
   const today = new Date();
   if (today.toDateString() === date.toDateString()) {

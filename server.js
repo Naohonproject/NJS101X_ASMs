@@ -17,6 +17,7 @@ const annualLeaveRouter = require("./routers/leave");
 const workInforRouter = require("./routers/workinfor");
 const salaryQueryRouter = require("./routers/salaryQuery");
 const AuthRouter = require("./routers/auth");
+const managerRouter = require("./routers/manager");
 
 const staffController = require("./controllers/staffControllers");
 // import model
@@ -111,6 +112,7 @@ server.use(workInforRouter);
 server.use(annualLeaveRouter);
 server.use(salaryQueryRouter);
 server.use(AuthRouter);
+server.use(managerRouter);
 server.get("/", staffController.getIndex);
 server.use(staffController.getErrorPage);
 

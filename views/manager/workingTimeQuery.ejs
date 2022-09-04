@@ -1,0 +1,117 @@
+<%- include('../includes/head.ejs') %>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/check.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/modal.css">
+    <link rel="stylesheet" href="/css/forms.css">
+    
+    
+</head>
+
+<body>
+    <%- include('../includes/navigation.ejs') %>
+
+    <main>
+        <div class="row g-1">       
+            <div class="col-12 mt-2">
+                <div class="status">
+                    <h3>
+                        Working Time Confirmation
+                    </h3>
+                </div>
+                <form class="product-form" action="/manage" method="POST">
+                    <div class="form-control mb-1 align-items-center justify-content-around">
+                        <label for="positiveDate">Choose Staff : </label>
+                        <select name = "staffId" class="form-select" aria-label=".form-select-lg example">
+                            <% staffs.forEach((staff,index) => {  %>
+                                <% if (employee && employee.email=== staff.email) { %>        
+                                    <option selected value="<%=staff._id%>"><%=staff.name%></option>
+                                 <% } else { %>
+                                    <option value="<%=staff._id%>"><%=staff.name%></option>
+                                <% } %>
+                            <% }) %>
+                        </select>
+                    </div>
+                    <div class="form-control mb-1 align-items-center justify-content-around">
+                        <label for="month">Choose Month : </label>
+                        <select name = "month" class="form-select" aria-label=".form-select-lg example">
+                            <% [1,2,3,4,5,6,7,8,9,10,11,12].forEach((month,index) => {  %>
+                                <% if (chooseMonth && chooseMonth == month) { %>
+                                    <option selected value="<%=month%>"><%=month%></option>
+                                <% } else { %>
+                                    <option value="<%=month%>"><%=month%></option>
+                                 <% } %>
+                            <% }) %>
+                        </select>
+                    </div>
+                      
+                    <input type="hidden" name="_csrf" value="<%= csrfToken %>" />                 
+                    <div class="btn-gr mt-3">
+                        <button type="submit" class="btn btn-info">Checking Staff Working Time</button>
+                    </div>
+                </form> 
+             </div>
+             <% if(message) { %> 
+                <div  class="user-message user-message--error mt-5"><%= message %></div>
+            <% } %>
+            <% if(employee) { %>
+                <div class="work-infor manage">   
+                    <h2 style="text-align: center;">Work Time Information</h2>
+                    <table class="table table-striped rollcall-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Work Date</th>
+                                <th scope="col">Work Place</th>
+                                <th scope="col">Check In Time </th>
+                                <th scope="col">Check Out Time </th>
+                                <th scope="col">Sesstion Duration</th>
+                                <th scope="col">Total Work Time</th>
+                                <th scope="col">Over Time</th>
+                                <th scope="col">Annaul Leave</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% workInfors.forEach(workInfor => { %>
+                            <tr>
+                                <td scope="col"><%= workInfor.date %></td>
+                                <td scope="col"><%= workInfor.workPlace %></td>
+                                <td scope="col"><%= workInfor.checkIn %></td>
+                                 <td scope="col">
+                                    <% if(workInfor.checkOut !== null) { %>
+                                       <%= workInfor.checkOut %>
+                                    <% } else { %>
+                                        --
+                                    <% } %>
+                                </td>
+                                <td scope="col">
+                                    <% if(workInfor.duration !== null) { %>
+                                       <%= workInfor.duration %>
+                                    <% } else { %>
+                                        -
+                                    <% } %>
+                                </td>
+                                <td scope="col">
+                                    <% if(workInfor.workTimeAndaAnnualLeave !== null && !isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
+                                        <%= workInfor.workTimeAndaAnnualLeave %>
+                                    <% } else if (isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
+                                        Not Finshed
+                                    <% } else { %> 
+                                        -
+                                    <% } %>
+                                </td>
+                                 <td scope="col">
+                                    <% if(workInfor.overTime !== null) { %>
+                                        <%= workInfor.overTime %>
+                                    <% } else { %>
+                                        -
+                                    <% } %>
+                                </td>
+                                <td scope="col"><%= workInfor.registedAnnualTime %></td>
+                            </tr>
+                            <% }); %> 
+                        </tbody>
+                    </table>  
+                </div>
+            <% } %>
+    </main>
+<%- include('../includes/end.ejs') %>

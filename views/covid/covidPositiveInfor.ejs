@@ -14,6 +14,10 @@
             <div class="row">
                 <div class="col-12 work-infor">   
                     <h2 style="text-align: center;">Table of positive covid 19</h2>
+                     <% if(staff.role === "manager") { %>
+                        <h5 style="text-align: center;">Staff Name :  <%= employee.name %></h5>
+                    <% } %>
+                    <% if(covidInfors.length > 0) { %>
                     <table class="table table-striped rollcall-table">
                         <thead>
                             <tr>
@@ -30,7 +34,17 @@
                             </tr>
                             <% }); %> 
                         </tbody>
-                    </table>  
+                    </table>
+                    <% if(staff.role === "manager") { %>
+                            <div style="text-align: center;">
+                                <a class="btn btn-primary" href="/covid/covid-positive-query/<%= employee._id %>" role="button">DownLoad PDF</a>
+                            </div>
+                    <% } %>
+                     <% } else { %> 
+                        <h1 style="text-align: center;margin-top : 7rem;color: red;">This staff have not registered any covid positive information</h1>       
+                    <% } %>
+                    
+                    
                 </div>
             </div>
         </div>

@@ -122,9 +122,7 @@
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />                 
                     <div class="btn-gr">
                         <button type="submit" class="btn btn-info">Query</button>
-                        <!-- <button type="button" class="btn btn-info"><a style="text-decoration:none ; color : black;" href="/covid/tempInfor">PDF</a></button> -->
                     </div>
-
                 </form> 
              </div>
 
@@ -146,7 +144,6 @@
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
                     <div class="btn-gr">
                         <button type="submit" class="btn btn-info">Query</button>
-                        <!-- <button type="button" class="btn btn-info"><a style="text-decoration:none ; color : black;" href="/covid/injection">Query Registed Infors</a></button> -->
                     </div>
                 </form> 
              </div>
@@ -157,19 +154,18 @@
                         Staff Positive Information
                     </h3>
                 </div>
-                <form class="product-form" action="/covid/covid19-positive" method="POST">
+                <form class="product-form" action="/covid/query/covid19-positive-infor" method="POST">
                     <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                    <div class="form-control">
-                        <label for="positiveDate">positive Date</label>
-                        <input  type="date" name="positiveDate" id="positiveDate">
-                    </div>
-                    <div class="form-control">
-                        <label for="numberOfVacination">Injections Times</label>
-                        <input  type="text" name="numberOfVaccination" id="numberOfVacination">
+                   <div class="form-control mb-1 align-items-center justify-content-around">
+                        <label for="positiveDate">Staff name : </label>
+                        <select name = "staffId" class="form-select" aria-label=".form-select-lg example">
+                            <% staffs.forEach((staff,index) => {  %>
+                            <option  value="<%=staff._id%>"><%=staff.name%></option>
+                            <% }) %>
+                        </select>
                     </div>
                     <div class="btn-gr">
-                        <button type="submit" class="btn btn-info">Register</button>
-                        <button type="button" class="btn btn-info"><a style="text-decoration:none ; color : black;" href="/covid/covid19-positive"> Covid declaration Query </a></button>
+                        <button type="submit" class="btn btn-info">Query</button>
                     </div>
                 </form> 
              </div>          

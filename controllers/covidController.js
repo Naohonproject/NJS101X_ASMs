@@ -1,5 +1,8 @@
 const { validationResult } = require("express-validator");
 const Staff = require("../model/staffModel");
+const path = require("path");
+const fs = require("fs");
+const PDFDocument = require("pdfkit");
 
 /**Logic for MH4 */
 
@@ -68,7 +71,7 @@ exports.postTempInfor = (req, res, next) => {
         pageTitle: "Staff Temperature Check List ",
         path: "/covid",
         tempRegisterDetails: tempRegisterDetails,
-        staffName: req.staff.name,
+        employee: updatedStaff,
       });
     })
     .catch((error) => console.log(error));
@@ -89,6 +92,7 @@ exports.getTempInfor = (req, res, next) => {
     pageTitle: "Staff Temperature Check List ",
     path: "/covid",
     tempRegisterDetails: tempRegisterDetails,
+    employee: req.staff,
   });
 };
 
@@ -206,7 +210,7 @@ exports.postStaffCovidInfor = (req, res, next) => {
         pageTitle: "Staff Temperature Check List ",
         path: "/covid",
         tempRegisterDetails: tempRegisterDetails,
-        staffName: staff.name,
+        employee: staff,
       });
     })
     .catch((error) => {
@@ -221,8 +225,166 @@ exports.postStaffQueryStaffInjectionInfor = (req, res, next) => {
         pageTitle: "Staff injected vaccination List ",
         path: "/covid",
         injectionInfors: staff.vaccinationInfor,
-        staffName: staff.name,
+        employee: staff,
       });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+exports.postQueryPositiveInfor = (req, res, next) => {
+  Staff.findById(req.body.staffId)
+    .then((staff) => {
+      res.render("covid/covidPositiveInfor", {
+        pageTitle: "Positive Covid Infor",
+        path: "/covid",
+        covidInfors: staff.positiveCovid,
+        employee: staff,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+exports.getPDFtempInfor = (req, res, next) => {
+  const employeeID = req.params.employeeId;
+
+  Staff.findById(employeeID)
+    .then((employee) => {
+      if (!employee) {
+        return next(new Error("The Employee was not found"));
+      }
+      const temPDFName = Date.now() + employeeID + ".pdf";
+      const tempInforPath = path.join("data", "Staff_Temp_Infor", temPDFName);
+      const pdfDoc = new PDFDocument();
+
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="' + temPDFName + '"'
+      );
+
+      // pdfDoc.pipe(fs.createWriteStream(tempInforPath));
+
+      pdfDoc.pipe(res);
+
+      pdfDoc.fontSize(30).text("Staff Temperature Information");
+      pdfDoc.fontSize(20).text(`Employee Name : ${employee.name}`);
+
+      pdfDoc.text(
+        "************************************************************"
+      );
+
+      employee.tempInfor.forEach((tempInfor) => {
+        pdfDoc
+          .fontSize(15)
+          .text(`Date : ${tempInfor.time.toLocaleDateString()}`);
+        pdfDoc
+          .fontSize(15)
+          .text(`Time : ${tempInfor.time.toLocaleTimeString()}`);
+        pdfDoc.fontSize(15).text(`Temperature : ${tempInfor.temp}`);
+        if (tempInfor.length > 1) {
+          pdfDoc.text("-----------------------");
+        }
+      });
+      pdfDoc.end();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+exports.getPDFVaccinationInfor = (req, res, next) => {
+  const employeeID = req.params.employeeId;
+
+  Staff.findById(employeeID)
+    .then((employee) => {
+      if (!employee) {
+        return next(new Error("The Employee was not found"));
+      }
+      const temPDFName = Date.now() + employeeID + ".pdf";
+      // const tempInforPath = path.join("data", "Staff_Temp_Infor", temPDFName);
+      const pdfDoc = new PDFDocument();
+
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="' + temPDFName + '"'
+      );
+
+      // pdfDoc.pipe(fs.createWriteStream(tempInforPath));
+
+      pdfDoc.pipe(res);
+
+      pdfDoc.fontSize(30).text("Staff Vaccination Information");
+      pdfDoc.fontSize(20).text(`Employee Name : ${employee.name}`);
+
+      pdfDoc.text(
+        "************************************************************"
+      );
+
+      employee.vaccinationInfor.forEach((vaccineInfor) => {
+        pdfDoc
+          .fontSize(15)
+          .text(`Date : ${vaccineInfor.injectionDate.toLocaleDateString()}`);
+        pdfDoc
+          .fontSize(15)
+          .text(`Vaccine Type : ${vaccineInfor.vaccinationType}`);
+        pdfDoc
+          .fontSize(15)
+          .text(`Dose of vaccine  : ${vaccineInfor.injectionOrder}`);
+        if (vaccineInfor.length > 1) {
+          pdfDoc.text("-----------------------");
+        }
+      });
+      pdfDoc.end();
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+exports.getPDFPositiveCovidInfor = (req, res, next) => {
+  const employeeID = req.params.employeeId;
+
+  Staff.findById(employeeID)
+    .then((employee) => {
+      if (!employee) {
+        return next(new Error("The Employee was not found"));
+      }
+      const temPDFName = Date.now() + "positive-covid" + employeeID + ".pdf";
+      // const tempInforPath = path.join("data", "Staff_Temp_Infor", temPDFName);
+      const pdfDoc = new PDFDocument();
+
+      res.setHeader("Content-Type", "application/pdf");
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="' + temPDFName + '"'
+      );
+
+      // pdfDoc.pipe(fs.createWriteStream(tempInforPath));
+
+      pdfDoc.pipe(res);
+
+      pdfDoc.fontSize(30).text("Staff Positive Covid 19 Information");
+      pdfDoc.fontSize(20).text(`Employee Name : ${employee.name}`);
+
+      pdfDoc.text(
+        "************************************************************"
+      );
+
+      employee.positiveCovid.forEach((posInfor) => {
+        pdfDoc
+          .fontSize(15)
+          .text(`Date : ${posInfor.positiveDate.toLocaleDateString()}`);
+        pdfDoc.fontSize(15).text(`Vaccine Type : ${posInfor.injectionTimes}`);
+        if (posInfor.length > 1) {
+          pdfDoc.text("-----------------------");
+        }
+      });
+      pdfDoc.end();
     })
     .catch((error) => {
       console.log(error);

@@ -2,7 +2,7 @@ const express = require("express");
 const { body } = require("express-validator");
 
 const covidController = require("../controllers/covidController");
-const { isAuth } = require("../middleware/auth");
+const { isAuth, isStaff } = require("../middleware/auth");
 
 const router = express.Router();
 
@@ -53,17 +53,40 @@ router.post(
   covidController.postCovid19PositiveInfor
 );
 
-router.post("/covid/query/temp-infor", covidController.postStaffCovidInfor);
+router.post(
+  "/covid/query/temp-infor",
+  isAuth,
+  covidController.postStaffCovidInfor
+);
 
 router.post(
   "/covid/query/injection-infor",
+  isAuth,
   covidController.postStaffQueryStaffInjectionInfor
 );
+
+router.post(
+  "/covid/query/covid19-positive-infor",
+  isAuth,
+  covidController.postQueryPositiveInfor
+);
+
+router.get("/covid/temp-query/:employeeId", covidController.getPDFtempInfor);
 
 router.get(
   "/covid/covid19-positive",
   isAuth,
   covidController.getCovid19PositiveInfor
+);
+
+router.get(
+  "/covid/vaccination-query/:employeeId",
+  covidController.getPDFVaccinationInfor
+);
+
+router.get(
+  "/covid/covid-positive-query/:employeeId",
+  covidController.getPDFPositiveCovidInfor
 );
 
 module.exports = router;

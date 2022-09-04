@@ -2,6 +2,8 @@ const Staff = require("../model/staffModel");
 const { getWorkSessionInfor, getUnique } = require("../utils/subFunc");
 
 exports.getManagePage = (req, res, next) => {
+  const errorMessage = req.flash("error")[0];
+
   Staff.find({ managerID: req.staff._id })
     .then((staffs) => {
       res.render("manager/workingTimeQuery", {
@@ -9,7 +11,7 @@ exports.getManagePage = (req, res, next) => {
         path: "/manage",
         staffs: staffs,
         employee: null,
-        message: null,
+        message: errorMessage,
         chooseMonth: null,
       });
     })
@@ -21,6 +23,16 @@ exports.getManagePage = (req, res, next) => {
 exports.postManageStaffWorkingTime = (req, res, next) => {
   const employeeId = req.body.staffId;
   const chooseMonth = req.body.month;
+  let status = true;
+
+  req.staff.confirm.forEach((conf) => {
+    if (
+      conf.StaffId.toString() === employeeId &&
+      conf.ConfirmMonth == chooseMonth
+    ) {
+      status = false;
+    }
+  });
 
   let managedEmployees;
 
@@ -48,6 +60,7 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
           workInfors: null,
           message: "This staff have no work session in this month",
           chooseMonth: chooseMonth,
+          status: status,
         });
       }
 
@@ -69,6 +82,7 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
         workInfors: workInforOfChooseMonth,
         message: null,
         chooseMonth: chooseMonth,
+        status: status,
       });
     })
     .catch((error) => {
@@ -97,13 +111,39 @@ exports.postDeleteWorkSession = (req, res, next) => {
 };
 
 exports.postConfirmWorkSessions = (req, res, next) => {
-  console.log(req.body.workSession.split(","));
-  // const workSessions = req.body.workSession;
-  // const checkOuts = workSessions.map((workSession) => {
-  //   return workSession.checkOut;
-  // });
+  const employeeId = req.body.employeeId;
+  const ChooseMonth = req.body.chooseMonth;
 
-  console.log(req.body.employeeId);
-  console.log(req.body.chooseMonth);
-  res.redirect("/");
+  Staff.findById(employeeId)
+    .then((employee) => {
+      const workSessionOfMonth = employee.workSessions.filter((workSession) => {
+        return workSession.checkIn.getMonth() + 1 == ChooseMonth;
+      });
+      const isNotCheckOut =
+        !workSessionOfMonth[workSessionOfMonth.length - 1].checkOut;
+
+      if (isNotCheckOut) {
+        req.flash(
+          "error",
+          "There is an work session is not checked out yet,Please let employee checkout and try again"
+        );
+        return res.redirect("/manage");
+      }
+
+      req.staff.confirm.push({
+        StaffId: employeeId,
+        ConfirmMonth: ChooseMonth,
+      });
+      return req.staff.save();
+    })
+    .then(() => {
+      req.flash(
+        "error",
+        "You have recently confirmed work session of this month"
+      );
+      return res.redirect("/manage");
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };

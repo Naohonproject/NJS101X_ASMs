@@ -106,6 +106,12 @@ const staffSchema = new Schema({
       },
     },
   ],
+  confirm: [
+    {
+      StaffId: Schema.Types.ObjectId,
+      ConfirmMonth: String,
+    },
+  ],
 });
 
 // export outside of module to create the instance of database

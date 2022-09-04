@@ -57,6 +57,11 @@
             <% if(employee) { %>
                 <div class="work-infor manage">   
                     <h2 style="text-align: center;">Work Time Information</h2>
+                    <% if(status) { %>
+                        <h5 style="text-align: center;"><i>Status : Not Confirmed</i></h5>
+                    <% } else { %>
+                        <h5 style="text-align: center;"> <i>Status : Confirmed</i></h5>
+                    <% } %>
                     <table class="table table-striped rollcall-table">
                         <thead>
                             <tr>
@@ -108,7 +113,7 @@
                                     <% } %>
                                 </td>
                                 <td scope="col"><%= workInfor.registedAnnualTime %></td>
-                                <% if(workInfor.checkOut) { %>
+                                <% if(workInfor.checkOut && status) { %>
                                     <td scope="col">
                                         <form action="/manage/deleteWorkSession" method="post">
                                             <input type="hidden" name="_csrf" value="<%= csrfToken %>" />                 
@@ -129,7 +134,11 @@
                         <input type="hidden" name="employeeId" value="<%= employee._id %>" />                 
                         <input type="hidden" name="chooseMonth" value="<%= chooseMonth %>" />                 
                         <div class="btn-gr mt-3">
-                            <button type="submit" class="btn btn-warning">Confirm Work Sessions</button>
+                            <% if(status) { %>
+                                <button type="submit" class="btn btn-warning">Confirm Work Sessions</button>
+                            <% } else { %>
+                                <button disabled type="submit" class="btn btn-warning">Confirm Work Sessions</button>
+                            <% } %>
                         </div>
                 </form> 
                 </div>

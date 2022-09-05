@@ -95,6 +95,7 @@ const getWorkSessionInfor = (workSessions, annualLeaveRegisters) => {
       overTime: overTime,
       workPlace: workSession.workPos,
       workSessionId: workSession._id,
+      workSession: workSession,
     };
   });
   // return workInfor

@@ -80,7 +80,18 @@ exports.postStaffCheckout = (req, res, next) => {
 
   req.staff
     .save()
-    .then(() => {
+    .then((updatedStaff) => {
+      const lastWorkSession = updatedStaff.workSessions[lastWorkSessionIndex];
+      console.log(lastWorkSession.checkIn.getDate());
+      console.log(lastWorkSession.checkOut.getDate());
+      if (
+        lastWorkSession.checkIn.getDate() !== lastWorkSession.checkOut.getDate()
+      ) {
+        req.flash(
+          "error",
+          "Your last check-in and this check-out turn is not the same day.This work session is invalid.Contact your manager to solve this problem"
+        );
+      }
       res.redirect("/rollcall/infor");
     })
     .catch((error) => {
@@ -90,6 +101,10 @@ exports.postStaffCheckout = (req, res, next) => {
 
 // get all the rollcall of today, then render it to views
 exports.getStaffRollCallInfor = (req, res, next) => {
+  // get error of the last request
+
+  const errorMessage = req.flash("error");
+
   const workSessions = req.staff.workSessions;
   // filter from all worksession ,by using isToday function to filting the worksessions
   const workSessionToday = workSessions.filter((workSession) =>
@@ -127,9 +142,10 @@ exports.getStaffRollCallInfor = (req, res, next) => {
         position: rc.workPos,
       };
     }),
-    pageTitle: "All Work Session",
+    pageTitle: "Today, Work Sessions",
     path: "/rollcall",
     annualLeave: req.staff.annualLeave,
+    errorMessage: errorMessage[0],
   });
 };
 
@@ -253,9 +269,6 @@ exports.getWorkInformation = (req, res, next) => {
   } else {
     limitedWorkSession = req.staff.workSessions.slice(startWorkSession);
   }
-
-  console.log(limitedWorkSession);
-  console.log(page);
 
   // get workin infor
   const workInfors = getWorkSessionInfor(

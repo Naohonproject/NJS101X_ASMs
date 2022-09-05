@@ -74,6 +74,19 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
         return workMonth === Number(chooseMonth);
       });
 
+      // find the invalid workinfor of month
+
+      const errorIndex = [];
+
+      workInforOfChooseMonth.forEach((workInfor, index) => {
+        const checkIn = new Date(workInfor.workSession.checkIn);
+        const checkOut = new Date(workInfor.workSession.checkOut);
+
+        if (checkIn.getDate() !== checkOut.getDate()) {
+          errorIndex.push(index);
+        }
+      });
+
       res.render("manager/workingTimeQuery", {
         pageTitle: "Work Time Manage",
         path: "/manage",
@@ -83,6 +96,7 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
         message: null,
         chooseMonth: chooseMonth,
         status: status,
+        errorIndex: errorIndex,
       });
     })
     .catch((error) => {
@@ -103,7 +117,7 @@ exports.postDeleteWorkSession = (req, res, next) => {
       return staff.save();
     })
     .then((updatedStaff) => {
-      res.redirect("/manager/workingTimeQuery");
+      res.redirect("/manage");
     })
     .catch((error) => {
       console.log(error);

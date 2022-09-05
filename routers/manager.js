@@ -5,17 +5,19 @@ const { isAuth } = require("../middleware/auth");
 
 const router = express.Router();
 
-router.get("/manage", managerController.getManagePage);
+router.get("/manage", isAuth, managerController.getManagePage);
 
-router.post("/manage", managerController.postManageStaffWorkingTime);
+router.post("/manage", isAuth, managerController.postManageStaffWorkingTime);
 
 router.post(
   "/manage/deleteWorkSession",
+  isAuth,
   managerController.postDeleteWorkSession
 );
 
 router.post(
   "/manage/confirm-Work-Session",
+  isAuth,
   managerController.postConfirmWorkSessions
 );
 

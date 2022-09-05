@@ -58,9 +58,9 @@
                 <div class="work-infor manage">   
                     <h2 style="text-align: center;">Work Time Information</h2>
                     <% if(status) { %>
-                        <h5 style="text-align: center;"><i>Status : Not Confirmed</i></h5>
+                        <h5 style="text-align: center;"><i>Status : Editable</i></h5>
                     <% } else { %>
-                        <h5 style="text-align: center;"> <i>Status : Confirmed</i></h5>
+                        <h5 style="text-align: center;"> <i>Status : Locked</i></h5>
                     <% } %>
                     <table class="table table-striped rollcall-table">
                         <thead>
@@ -77,8 +77,9 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <% workInfors.forEach(workInfor => { %>
-                            <tr>
+                             <% workInfors.forEach((workInfor,index) => { %>
+                            <%if(errorIndex.length > 0 && errorIndex.includes(index)) { %>
+                                <tr style="color: red;">
                                 <td scope="col"><%= workInfor.date %></td>
                                 <td scope="col"><%= workInfor.workPlace %></td>
                                 <td scope="col"><%= workInfor.checkIn %></td>
@@ -126,7 +127,58 @@
                                     <td scope="col"><form action="#"><button disabled type="submit" class="btn btn-danger">Delete</button></form></td>
                                 <% } %>
                             </tr>
-                            <% }); %> 
+                            <% } else { %>
+                                <tr >
+                                    <td scope="col"><%= workInfor.date %></td>
+                                    <td scope="col"><%= workInfor.workPlace %></td>
+                                    <td scope="col"><%= workInfor.checkIn %></td>
+                                    <td scope="col">
+                                        <% if(workInfor.checkOut !== null) { %>
+                                        <%= workInfor.checkOut %>
+                                        <% } else { %>
+                                            --
+                                        <% } %>
+                                    </td>
+                                    <td scope="col">
+                                        <% if(workInfor.duration !== null) { %>
+                                        <%= workInfor.duration %>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </td>
+                                    <td scope="col">
+                                        <% if(workInfor.workTimeAndaAnnualLeave !== null && !isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
+                                            <%= workInfor.workTimeAndaAnnualLeave %>
+                                        <% } else if (isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
+                                            Not Finished
+                                        <% } else { %> 
+                                            -
+                                        <% } %>
+                                    </td>
+                                    <td scope="col">
+                                        <% if(workInfor.overTime !== null) { %>
+                                            <%= workInfor.overTime %>
+                                        <% } else { %>
+                                            -
+                                        <% } %>
+                                    </td>
+                                    <td scope="col"><%= workInfor.registedAnnualTime %></td>
+                                    <% if(workInfor.checkOut && status) { %>
+                                        <td scope="col">
+                                            <form action="/manage/deleteWorkSession" method="post">
+                                                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />                 
+                                                <input value="<%= workInfor.workSessionId %>" name="workSessionId" type="hidden">
+                                                <input value="<%= employee._id %>" name="employeeId" type="hidden">
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </td>
+                                    <% } else { %>
+                                        <td scope="col"><form action="#"><button disabled type="submit" class="btn btn-danger">Delete</button></form></td>
+                                    <% } %>
+                            </tr>
+                            <% } %>
+                            
+                             <% }); %> 
                         </tbody>
                     </table>
                      <form class="product-form" action="/manage/confirm-Work-Session" method="POST">

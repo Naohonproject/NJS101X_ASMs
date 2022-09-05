@@ -7,4 +7,6 @@ const router = express.Router();
 // get /workinfor reqest, then getWorkInformation will control the res
 router.get("/workinfor", isAuth, isStaff, staffController.getWorkInformation);
 
+router.post("/work-infor/pagination", staffController.postWayToPagination);
+
 module.exports = router;

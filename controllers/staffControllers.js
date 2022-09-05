@@ -224,28 +224,67 @@ exports.postUpdatedProfile = (req, res, next) => {
     .catch((error) => console.log(error));
 };
 
+exports.postWayToPagination = (req, res, next) => {
+  const numberOfWorkSession = req.body.numberOfWorkSession;
+  LINES_PER_PAGE = Number(numberOfWorkSession);
+  req.session.numberOfPage = LINES_PER_PAGE;
+  res.redirect("/workinfor");
+};
+
 // controller to get the infor mation of each worksestion
+let LINES_PER_PAGE = 5;
 exports.getWorkInformation = (req, res, next) => {
   const months = req.staff.workSessions.map((workSession) => {
     return workSession.checkIn.getMonth() + 1;
   });
 
+  const page = +req.query.page || 1;
+  const startWorkSession = (page - 1) * LINES_PER_PAGE;
+  const totalItems = req.staff.workSessions.length;
+
   // get the months of staff working time
   const workMonths = getUnique(months);
+  let limitedWorkSession;
+  if (LINES_PER_PAGE <= req.staff.workSessions.length - startWorkSession) {
+    limitedWorkSession = req.staff.workSessions.slice(
+      startWorkSession,
+      startWorkSession + LINES_PER_PAGE
+    );
+  } else {
+    limitedWorkSession = req.staff.workSessions.slice(startWorkSession);
+  }
+
+  console.log(limitedWorkSession);
+  console.log(page);
 
   // get workin infor
   const workInfors = getWorkSessionInfor(
-    req.staff.workSessions,
+    limitedWorkSession,
     req.staff.annualLeaveRegisters
   );
 
-  // render the working time page with months, and working infor of each worksession
-  res.render("workInfor", {
-    pageTitle: "Work Infor",
-    path: "/workinfor",
-    workInfors: workInfors,
-    workMonths: workMonths,
-  });
+  // render the working time page with months, and working infor of each work session
+  Staff.findById(req.staff.managerID)
+    .then((manager) => {
+      res.render("workInfor", {
+        pageTitle: "Work Infor",
+        path: "/workinfor",
+        workInfors: workInfors,
+        workMonths: workMonths,
+        managerName: manager.name,
+        hasNextPage: LINES_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        currentPage: page,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / LINES_PER_PAGE),
+        totalWorkSession: totalItems,
+        prevChoose: req.session.numberOfPage || LINES_PER_PAGE,
+      });
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 };
 
 // const post the salary query by dedicated month , by the form in working time page

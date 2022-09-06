@@ -1,4 +1,5 @@
 const { validationResult } = require("express-validator");
+const fs = require("fs");
 
 // import the sub functions firm utils folder
 const { isToday, getUnique, getWorkSessionInfor } = require("../utils/subFunc");
@@ -235,7 +236,14 @@ exports.postUpdatedProfile = (req, res, next) => {
 
   if (image) {
     // delete old file that stored in server
-    fileHelp.deleteFile(req.staff.imageUrl);
+    try {
+      fileHelp.deleteFile(req.staff.imageUrl);
+    } catch (err) {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
+    }
+
     // update a new url of updating file
     req.staff.imageUrl = image.path;
   }

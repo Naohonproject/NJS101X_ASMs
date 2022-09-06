@@ -7,3 +7,5 @@
 
     email : letuanbao@mbg8.onmicrosoft.com
     password : 123456
+
+Heroku App Deploy Url : https://funix-njs101x-asm.herokuapp.com/

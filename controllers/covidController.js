@@ -306,7 +306,7 @@ exports.getPDFtempInfor = (req, res, next) => {
           .fontSize(15)
           .text(`Time : ${tempInfor.time.toLocaleTimeString()}`);
         pdfDoc.fontSize(15).text(`Temperature : ${tempInfor.temp}`);
-        if (tempInfor.length > 1) {
+        if (employee.tempInfor.length > 1) {
           pdfDoc.text("-----------------------");
         }
       });
@@ -358,7 +358,7 @@ exports.getPDFVaccinationInfor = (req, res, next) => {
         pdfDoc
           .fontSize(15)
           .text(`Dose of vaccine  : ${vaccineInfor.injectionOrder}`);
-        if (vaccineInfor.length > 1) {
+        if (employee.vaccinationInfor.length > 1) {
           pdfDoc.text("-----------------------");
         }
       });
@@ -405,7 +405,7 @@ exports.getPDFPositiveCovidInfor = (req, res, next) => {
           .fontSize(15)
           .text(`Date : ${posInfor.positiveDate.toLocaleDateString()}`);
         pdfDoc.fontSize(15).text(`Vaccine Type : ${posInfor.injectionTimes}`);
-        if (posInfor.length > 1) {
+        if (employee.positiveCovid.length > 1) {
           pdfDoc.text("-----------------------");
         }
       });

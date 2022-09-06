@@ -86,8 +86,6 @@ exports.postStaffCheckout = (req, res, next) => {
     .save()
     .then((updatedStaff) => {
       const lastWorkSession = updatedStaff.workSessions[lastWorkSessionIndex];
-      console.log(lastWorkSession.checkIn.getDate());
-      console.log(lastWorkSession.checkOut.getDate());
       if (
         lastWorkSession.checkIn.getDate() !== lastWorkSession.checkOut.getDate()
       ) {

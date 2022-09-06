@@ -186,7 +186,9 @@ mongoose
         });
       })
       .then(() => {
-        server.listen(port);
+        server.listen(process.evn.PORT || 8080, "0.0.0.0", () => {
+          console.log("server is running");
+        });
       });
   })
   .catch((error) => console.log(error));

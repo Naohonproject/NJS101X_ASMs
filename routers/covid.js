@@ -9,6 +9,7 @@ const router = express.Router();
 // router to get covid page
 router.get("/covid", isAuth, covidController.getCovidInforForms);
 
+// validate the staff post temperature information
 // routers to conform the forms int covid page
 router.post(
   "/covid/tempInfor",
@@ -26,8 +27,10 @@ router.post(
   covidController.postTempInfor
 );
 
+// get temp registered information
 router.get("/covid/tempInfor", isAuth, covidController.getTempInfor);
 
+// post injection and validate the form
 router.post(
   "/covid/injection",
   isAuth,
@@ -37,6 +40,7 @@ router.post(
   covidController.postStaffInjectionInfor
 );
 
+// get registered injection information
 router.get("/covid/injection", isAuth, covidController.getStaffInjectionInfor);
 
 router.post(
@@ -53,24 +57,27 @@ router.post(
   covidController.postCovid19PositiveInfor
 );
 
+// post manager query staff's registered temperature information
 router.post(
   "/covid/query/temp-infor",
   isAuth,
   covidController.postStaffCovidInfor
 );
+// post manager query staff's registered injection information
 
 router.post(
   "/covid/query/injection-infor",
   isAuth,
   covidController.postStaffQueryStaffInjectionInfor
 );
-
+// post manager query staff's registered covid19-positive-information
 router.post(
   "/covid/query/covid19-positive-infor",
   isAuth,
   covidController.postQueryPositiveInfor
 );
 
+// get the pdf file for staff's registered temperature information
 router.get("/covid/temp-query/:employeeId", covidController.getPDFtempInfor);
 
 router.get(

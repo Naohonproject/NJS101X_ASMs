@@ -4,7 +4,7 @@ const { isAuth, isStaff } = require("../middleware/auth");
 
 const router = express.Router();
 
-// post /salry-month
+// post /salary-month
 router.post(
   "/salary-month",
   isAuth,

@@ -7,6 +7,7 @@ const router = express.Router();
 // get /workinfor reqest, then getWorkInformation will control the res
 router.get("/workinfor", isAuth, isStaff, staffController.getWorkInformation);
 
+// post/pagination , this will be fire when manager choose how to display data , 10,20,30 lines of page
 router.post("/work-infor/pagination", staffController.postWayToPagination);
 
 module.exports = router;

@@ -7,6 +7,7 @@ const { isAuth, isStaff } = require("../middleware/auth");
 const router = express.Router();
 
 // router for annual leave register post
+// validate the annual leave form
 router.post(
   "/annual-leave-register",
   isAuth,

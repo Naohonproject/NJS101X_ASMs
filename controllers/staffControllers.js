@@ -54,7 +54,7 @@ exports.getStaffRollCallForm = (req, res, next) => {
   }
 };
 
-// controllder to post staff checkin to db, then save it , after that rerender rollcal page to update new status of staff working status
+// controller to post staff checkin to db, then save it , after that rerender roll call page to update new status of staff working status
 exports.postStaffCheckIn = (req, res, next) => {
   const workPostion = req.body.workPosition;
   const checkIn = Date.now();
@@ -70,7 +70,11 @@ exports.postStaffCheckIn = (req, res, next) => {
     .then(() => {
       res.redirect("/rollcall");
     })
-    .catch((error) => console.log(error));
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
+    });
 };
 
 // post staff checkout then render the infor of all rollcalls of this day(realtime)
@@ -94,8 +98,10 @@ exports.postStaffCheckout = (req, res, next) => {
       }
       res.redirect("/rollcall/infor");
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 
@@ -106,7 +112,7 @@ exports.getStaffRollCallInfor = (req, res, next) => {
   const errorMessage = req.flash("error");
 
   const workSessions = req.staff.workSessions;
-  // filter from all worksession ,by using isToday function to filting the worksessions
+  // filter from all work session ,by using isToday function to filter the works sessions
   const workSessionToday = workSessions.filter((workSession) =>
     isToday(workSession.checkIn)
   );
@@ -202,7 +208,11 @@ exports.postAnnualLeaveForm = (req, res, next) => {
     .then(() => {
       res.redirect("/");
     })
-    .catch((error) => console.log(error));
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
+    });
 };
 
 // controller to get all the staff in for to render profile page
@@ -237,9 +247,14 @@ exports.postUpdatedProfile = (req, res, next) => {
     .then(() => {
       res.redirect("/profile");
     })
-    .catch((error) => console.log(error));
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
+    });
 };
 
+// controller to chang  the LINES_PER_PAGE variable then the workinfor will rerender with the new value of LINES_PER_PAGE
 exports.postWayToPagination = (req, res, next) => {
   const numberOfWorkSession = req.body.numberOfWorkSession;
   LINES_PER_PAGE = Number(numberOfWorkSession);
@@ -247,7 +262,7 @@ exports.postWayToPagination = (req, res, next) => {
   res.redirect("/workinfor");
 };
 
-// controller to get the infor mation of each worksestion
+// controller to get the information of each work session
 let LINES_PER_PAGE = 5;
 exports.getWorkInformation = (req, res, next) => {
   const months = req.staff.workSessions.map((workSession) => {
@@ -270,7 +285,7 @@ exports.getWorkInformation = (req, res, next) => {
     limitedWorkSession = req.staff.workSessions.slice(startWorkSession);
   }
 
-  // get workin infor
+  // get working information
   const workInfors = getWorkSessionInfor(
     limitedWorkSession,
     req.staff.annualLeaveRegisters
@@ -295,8 +310,10 @@ exports.getWorkInformation = (req, res, next) => {
         prevChoose: req.session.numberOfPage || LINES_PER_PAGE,
       });
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 

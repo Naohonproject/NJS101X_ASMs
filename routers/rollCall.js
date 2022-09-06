@@ -7,10 +7,13 @@ const router = express.Router();
 // router of the roll call page
 router.get("/", isAuth, isStaff, staffController.getStaffRollCallForm);
 
+// post/check in
 router.post("/checkin", isAuth, isStaff, staffController.postStaffCheckIn);
 
+// post checkout
 router.post("/checkout", isAuth, isStaff, staffController.postStaffCheckout);
 
+// get RollCall Infor
 router.get("/infor", isAuth, isStaff, staffController.getStaffRollCallInfor);
 
 module.exports = router;

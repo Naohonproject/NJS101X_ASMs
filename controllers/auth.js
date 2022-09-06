@@ -46,7 +46,11 @@ exports.postLogIn = (req, res, next) => {
           res.redirect("/login");
         });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
+    });
 };
 
 exports.postLogOut = (req, res, next) => {

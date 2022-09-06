@@ -21,8 +21,10 @@ exports.getCovidInforForms = (req, res, next) => {
         staffs: staffs,
       });
     })
-    .catch((error) => {
-      console.log(erro);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 
@@ -74,7 +76,11 @@ exports.postTempInfor = (req, res, next) => {
         employee: updatedStaff,
       });
     })
-    .catch((error) => console.log(error));
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
+    });
 };
 
 exports.getTempInfor = (req, res, next) => {
@@ -134,7 +140,11 @@ exports.postStaffInjectionInfor = (req, res, next) => {
         injectionInfors: injectionInfors,
       });
     })
-    .catch((error) => console.log(error));
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
+    });
 };
 
 exports.getStaffInjectionInfor = (req, res, next) => {
@@ -181,7 +191,11 @@ exports.postCovid19PositiveInfor = (req, res, next) => {
         covidInfors: covidInfors,
       });
     })
-    .catch((error) => console.log(error));
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
+    });
 };
 
 exports.getCovid19PositiveInfor = (req, res, next) => {
@@ -213,8 +227,10 @@ exports.postStaffCovidInfor = (req, res, next) => {
         employee: staff,
       });
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 
@@ -228,8 +244,10 @@ exports.postStaffQueryStaffInjectionInfor = (req, res, next) => {
         employee: staff,
       });
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 
@@ -243,11 +261,14 @@ exports.postQueryPositiveInfor = (req, res, next) => {
         employee: staff,
       });
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 
+// make pdf then send it along the response to let client download the pdf file
 exports.getPDFtempInfor = (req, res, next) => {
   const employeeID = req.params.employeeId;
 
@@ -291,8 +312,10 @@ exports.getPDFtempInfor = (req, res, next) => {
       });
       pdfDoc.end();
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 
@@ -341,8 +364,10 @@ exports.getPDFVaccinationInfor = (req, res, next) => {
       });
       pdfDoc.end();
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 
@@ -386,7 +411,9 @@ exports.getPDFPositiveCovidInfor = (req, res, next) => {
       });
       pdfDoc.end();
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };

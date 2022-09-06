@@ -33,6 +33,7 @@ const csrfProtection = csrf();
 
 const dateStr = new Date().toISOString().replace(/:/g, "-");
 
+// config where and how multer stores file from incoming request
 const fileStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "images");
@@ -42,6 +43,7 @@ const fileStorage = multer.diskStorage({
   },
 });
 
+// config the file filter for multer
 const fileFilter = (req, file, cb) => {
   if (
     file.mimetype === "image/png" ||
@@ -69,6 +71,7 @@ server.use(express.static(path.join(__dirname, "public")));
 // server the public image
 server.use("/images", express.static(path.join(__dirname, "images")));
 
+// register the session middleware
 server.use(
   session({
     secret: "my secret",
@@ -77,14 +80,22 @@ server.use(
     store: store,
   })
 );
+
+// use multer middleware to convert the file data from multi data form
 server.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
 
+// use csurf middleware to verify the post request, this will make the token and store in session, this token will be send along
+// responses then in the view , we  add this token in the form, when client send the post request, this token come along the request
+// then csrfProtection middleware will check the match of token in server session with token client send in the form
 server.use(csrfProtection);
 
+// use flash middleware to catch the error then store it in session until the next request
 server.use(flash());
 
+// middleware to authenticate user, if in the cookie attached to request ,
+// that determine whether client have right to reach some page or not
 server.use((req, res, next) => {
   if (!req.session.staff) {
     return next();
@@ -97,6 +108,7 @@ server.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
+// make the global variable for responses, that can use in all view without passing it from the render function
 server.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
@@ -115,6 +127,14 @@ server.use(AuthRouter);
 server.use(managerRouter);
 server.get("/", staffController.getIndex);
 server.use(staffController.getErrorPage);
+
+// register middleware to receive error from front middle send by next function then render the error page
+server.use((error, req, res, next) => {
+  res.status(500).render("500", {
+    pageTitle: "Error",
+    path: "/500",
+  });
+});
 
 // connect to the db on mongodb by using mongoose and connection string, then create a user if there is no user at all,if it has a user, no create more
 mongoose

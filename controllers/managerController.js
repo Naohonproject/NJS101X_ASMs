@@ -15,8 +15,10 @@ exports.getManagePage = (req, res, next) => {
         chooseMonth: null,
       });
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 
@@ -99,8 +101,10 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
         errorIndex: errorIndex,
       });
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 
@@ -119,8 +123,10 @@ exports.postDeleteWorkSession = (req, res, next) => {
     .then((updatedStaff) => {
       res.redirect("/manage");
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };
 
@@ -157,7 +163,9 @@ exports.postConfirmWorkSessions = (req, res, next) => {
       );
       return res.redirect("/manage");
     })
-    .catch((error) => {
-      console.log(error);
+    .catch((err) => {
+      const cachedError = new Error(err);
+      cachedError.httpStatusCode = 500;
+      return next(cachedError);
     });
 };

@@ -83,6 +83,8 @@ exports.postStaffCheckout = (req, res, next) => {
   const lastWorkSessionIndex = req.staff.workSessions.length - 1;
   req.staff.workSessions[lastWorkSessionIndex].checkOut = Date.now();
 
+  // check the last checkout, if checkout and check in is not in the same day , add a error message to session then when next request
+  // res.redirect will receive that error message
   req.staff
     .save()
     .then((updatedStaff) => {

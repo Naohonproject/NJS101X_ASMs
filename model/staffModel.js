@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-// defined staff Modlel
+// defined staff Model,this will map to the real data in mongodb, documents,that is the concept of mongodb,
+//  each document will contain key - value pair like javascript object, they are called Bson
+
 const staffSchema = new Schema({
   name: {
     type: String,

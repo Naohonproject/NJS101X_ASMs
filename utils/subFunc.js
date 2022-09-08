@@ -21,16 +21,19 @@ const getWorkSessionInfor = (workSessions, annualLeaveRegisters) => {
     }
 
     // if this worksession is the last worksession of day,take all worksession which has the same checkin day from total workSessions
+    //
     if (isLastWorkSessionOfDay) {
       const workDurationOfThisDay = workSessions
+        // for each last worksession we can get all work session of that day
         .filter((session) => {
           return (
             session.checkIn.toDateString() ===
             workSession.checkIn.toDateString()
           );
         })
-        // mapping through returned array(return by filter method) get the duration of each workSession,then return an array of durration of each workSession
+        // mapping through returned array(return by filter method) get the duration of each workSession,then return an array of duration of each workSession
         .map((register) => {
+          // if last worksession(that is the newest worksession, not have checkout yet), this will return NaN caused checkout is undefined
           return Number(
             ((register.checkOut - register.checkIn) / 3600000).toFixed(2)
           );

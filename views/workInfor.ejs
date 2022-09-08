@@ -22,10 +22,10 @@
                                 <th scope="col">Work Place</th>
                                 <th scope="col">Check In Time </th>
                                 <th scope="col">Check Out Time </th>
-                                <th scope="col">Sesstion Duration</th>
+                                <th scope="col">Session Duration</th>
                                 <th scope="col">Total Work Time</th>
                                 <th scope="col">Over Time</th>
-                                <th scope="col">Annaul Leave</th>
+                                <th scope="col">Annual Leave</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -53,7 +53,7 @@
                                     <% if(workInfor.workTimeAndaAnnualLeave !== null && !isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
                                         <%= workInfor.workTimeAndaAnnualLeave %>
                                     <% } else if (isNaN(workInfor.workTimeAndaAnnualLeave)) { %>
-                                        Not Finshed
+                                        Not Finished
                                     <% } else { %> 
                                         -
                                     <% } %>
@@ -109,7 +109,7 @@
                                 <span><%=managerName%></span>
                             </div>
                         </div>
-                    </div>
+                    </div>  
 
                     <div class="mt-3">
                         <h2 style="text-align: center; margin-bottom: 0!important;">Display Option</h2>

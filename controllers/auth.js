@@ -22,12 +22,14 @@ exports.postLogIn = (req, res, next) => {
 
   Staff.findOne({ email: email })
     .then((staff) => {
-      // staff with input email not existed in db, redirect to log in page, return that and the below code will not be run,if not code excute normally
+      // staff with input email not existed in db, redirect to log in page, return that and the below code will not be run,
+      // if not code execute normally
       if (!staff) {
         req.flash("error", "Invalid email or Password");
         return res.redirect("/login");
       }
-      // this func compare input password to hashed password(was store in db with staff mail) return a promise , with boolean go into then , true if match, false is not matching
+      // this func compare input password to hashed password(was stored in db with staff email)
+      // return a promise, with boolean go into then, true if match, false is not matching
       bscrypt
         .compare(password, staff.password)
         .then((isMatch) => {
@@ -35,10 +37,13 @@ exports.postLogIn = (req, res, next) => {
             // if match , create a session for this staff(the match staff with matched email and password)
             req.session.isLoggedIn = true;
             req.session.staff = staff;
+            // save the session ,then redirect to homepage
             return req.session.save(() => {
               res.redirect("/");
             });
           }
+          // if no user match email and password, create a flash error then redirect to log-in page to show error in log-in page and
+          // let user log-in agian
           req.flash("error", "Invalid email or Password");
           res.redirect("/login");
         })
@@ -54,6 +59,7 @@ exports.postLogIn = (req, res, next) => {
 };
 
 exports.postLogOut = (req, res, next) => {
+  // delete the session with sessionId that matches sessionId stored in cookie of postLogout request
   req.session.destroy((err) => {
     res.redirect("/");
   });

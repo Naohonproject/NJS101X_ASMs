@@ -26,9 +26,14 @@ const Staff = require("./model/staffModel");
 const MONGODB_URI =
   "mongodb+srv://letuanbao:SByQsXUanGc1VnuZ@cluster0.4ewgxhk.mongodb.net/Company";
 
-// create a server with express top level funtion
+// create a server with express top level function
 const server = express();
+// init store to point where to store session, if not defined this , session is stored in memory (RAM), Then will be free after server off
+// then user login information not exist in server anymore
 const store = new MongoDbStore({ uri: MONGODB_URI, collection: "sessions" });
+// create csrfProtection, this is a middleware to check incoming request have tho token we assign with post request or not,
+// this will avoid the fake request outside of our website, because cookie hold our sessionId then for any request, browser will
+// send sessionId in cookie with request header
 const csrfProtection = csrf();
 
 const dateStr = new Date().toISOString().replace(/:/g, "-");
@@ -60,18 +65,21 @@ const port = 3000;
 
 // set config for view engine
 server.set("view engine", "ejs");
+// set config for folder that express find views to response to user
 server.set("views", "views");
 
 // using middleware to parse request body to js object
 server.use(bodyParser.urlencoded({ extended: false }));
-// store file in storage that is in server folder
 
 // defined the public folder,to be able to access css and other static file
 server.use(express.static(path.join(__dirname, "public")));
-// server the public image
+// server the public image, server the public images
 server.use("/images", express.static(path.join(__dirname, "images")));
 
-// register the session middleware
+// register the session middleware,this will create the object , that will contain information , connect requests by sessionId
+// cause HTTP request is stateless, so that if we want request to share the information , we need to store something in server
+// send make key, send it with response , browser store that data in cookie, then next request can access that information
+// by take sessionId store in cookie, compare with session in server, this work flow will be done by session middleware
 server.use(
   session({
     secret: "my secret",
@@ -81,25 +89,27 @@ server.use(
   })
 );
 
-// use multer middleware to convert the file data from multi data form
+// use multer middleware to convert the file data from multi data form in coming post request
 server.use(
   multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
 );
 
-// use csurf middleware to verify the post request, this will make the token and store in session, this token will be send along
-// responses then in the view , we  add this token in the form, when client send the post request, this token come along the request
-// then csrfProtection middleware will check the match of token in server session with token client send in the form
+// use csurf middleware to verify the post request, this will make the token and store in session, this token will be sent along
+// responses then in the view , we  add this token in the form, when client send the post request, this token comes along the request
+// then csrfProtection middleware will check the match of token in server session with token client send with the form
 server.use(csrfProtection);
 
 // use flash middleware to catch the error then store it in session until the next request
 server.use(flash());
 
 // middleware to authenticate user, if in the cookie attached to request ,
-// that determine whether client have right to reach some page or not
+// that determine whether client have right to reach some routes or not
 server.use((req, res, next) => {
+  // if client have sessionId in cookie, next to next middleware to access the no need log-in routes
   if (!req.session.staff) {
     return next();
   }
+  // if user logged in , then incoming request, we assign that user information in incoming request
   Staff.findById(req.session.staff._id)
     .then((staff) => {
       req.staff = staff;
@@ -108,7 +118,7 @@ server.use((req, res, next) => {
     .catch((err) => console.log(err));
 });
 
-// make the global variable for responses, that can use in all view without passing it from the render function
+// make the global variable for all responses, that can use in all view without passing it from the res.render function
 server.use((req, res, next) => {
   res.locals.isAuthenticated = req.session.isLoggedIn;
   res.locals.csrfToken = req.csrfToken();
@@ -128,7 +138,7 @@ server.use(managerRouter);
 server.get("/", staffController.getIndex);
 server.use(staffController.getErrorPage);
 
-// register middleware to receive error from front middle send by next function then render the error page
+// register middleware to receive error from previous middleware sent by next function then render the error page
 server.use((error, req, res, next) => {
   res.status(500).render("500", {
     pageTitle: "Error",
@@ -136,7 +146,9 @@ server.use((error, req, res, next) => {
   });
 });
 
-// connect to the db on mongodb by using mongoose and connection string, then create a user if there is no user at all,if it has a user, no create more
+// connect to the db on mongodb by using mongoose and connection string,
+// then create a user if there is no user at all,if it has a user, no create more
+// use bscrypt to hash password of user
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
@@ -186,6 +198,7 @@ mongoose
         });
       })
       .then(() => {
+        // listen incoming request for the PORT that declared as environment variable or 8080 port
         server.listen(process.env.PORT || 8080, "0.0.0.0", () => {
           console.log("server is running");
         });

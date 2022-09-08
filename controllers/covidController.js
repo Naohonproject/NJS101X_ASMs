@@ -11,6 +11,7 @@ const PDFDocument = require("pdfkit");
  * get /covid
  * */
 
+// this controller for manager request
 exports.getCovidInforForms = (req, res, next) => {
   Staff.find({ managerID: req.staff._id })
     .then((staffs) => {
@@ -36,6 +37,7 @@ exports.postTempInfor = (req, res, next) => {
     time: new Date(req.body.registerTime),
   };
 
+  // this will receive the result of validation middleware, then will be run before this controller then next(error) if exist error
   const error = validationResult(req);
 
   if (!error.isEmpty()) {
@@ -46,13 +48,18 @@ exports.postTempInfor = (req, res, next) => {
     });
   }
 
+  // this check the record that same day ,time but then update the new temp-information for that record with new record
+  // this will let not have record same day, same time but temp information is different
   const douIndex = req.staff.tempInfor.findIndex((infor) => {
     return infor.time.getTime() === newTemInfor.time.getTime();
   });
 
   if (douIndex > -1) {
+    // if douIndex > -1 , mean that in the existing array of tempInfor, exists a record with same day and time
+    // then we just update that, not add more
     req.staff.tempInfor[douIndex] = newTemInfor;
   } else {
+    // if not dou , push it new record to the array
     req.staff.tempInfor.push(newTemInfor);
   }
 

@@ -27,6 +27,7 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
   const chooseMonth = req.body.month;
   let status = true;
 
+  // manager manages the confirm of staff's working time in the array of object, contain month and staff's _id
   req.staff.confirm.forEach((conf) => {
     if (
       conf.StaffId.toString() === employeeId &&
@@ -38,6 +39,7 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
 
   let managedEmployees;
 
+  // find staff who is managed by this  manager
   Staff.find({ managerID: req.staff._id })
     .then((staffs) => {
       managedEmployees = staffs;
@@ -49,10 +51,13 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
         return workSession.checkIn.getMonth() + 1;
       });
 
+      // get the unique month from months(be able to contains data like [10,10,10,9,9])
       const workMonths = getUnique(months);
 
+      // check the month user choose whether in the work month , that user has been working
       const isChooseMonthExist = workMonths.includes(Number(chooseMonth));
 
+      // if chooseMonth is not the month that staff have work, render the workingTimeQuery again with error message to display for user
       if (!isChooseMonthExist) {
         return res.render("manager/workingTimeQuery", {
           pageTitle: "Work Time Manage",
@@ -65,12 +70,13 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
           status: status,
         });
       }
-
+      // get all work session of this staff
       const workInfors = getWorkSessionInfor(
         employee.workSessions,
         employee.annualLeaveRegisters
       );
 
+      // filter staff's work session to get data just in this month, not all working session
       const workInforOfChooseMonth = workInfors.filter((workinfor) => {
         const workMonth = new Date(workinfor.date).getMonth() + 1;
         return workMonth === Number(chooseMonth);
@@ -83,7 +89,7 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
       workInforOfChooseMonth.forEach((workInfor, index) => {
         const checkIn = new Date(workInfor.workSession.checkIn);
         const checkOut = new Date(workInfor.workSession.checkOut);
-
+        // this will check the work session that has check in day and check out day in the same day, push the index error work session to errorIndex
         if (checkIn.getDate() !== checkOut.getDate()) {
           errorIndex.push(index);
         }
@@ -108,6 +114,7 @@ exports.postManageStaffWorkingTime = (req, res, next) => {
     });
 };
 
+// let manager delete the staff's work session that is finished(has checkout)
 exports.postDeleteWorkSession = (req, res, next) => {
   const DeleteWorkSessionId = req.body.workSessionId;
   const StaffId = req.body.employeeId;
